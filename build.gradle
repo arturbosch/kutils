@@ -1,0 +1,32 @@
+group 'io.gitlab.arturbosch'
+version '0.1'
+
+buildscript {
+	ext.kotlin_version = '1.0.5-2'
+
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	}
+}
+
+apply plugin: 'maven'
+apply plugin: 'kotlin'
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: uri('../repo'))
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
