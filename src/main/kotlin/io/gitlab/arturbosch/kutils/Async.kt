@@ -11,9 +11,8 @@ import java.util.function.Supplier
  * Creates a new fixed thread pool with #cores threads and allows to execute commands on the
  * created execution service. The executor will automatically be closed.
  */
-
-fun <T> withExecutor(block: ExecutorService.() -> T): T {
-	val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
+					 block: ExecutorService.() -> T): T {
 	return block.invoke(executor).apply {
 		executor.shutdown()
 	}
