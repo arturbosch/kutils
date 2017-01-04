@@ -21,13 +21,12 @@ class HttpClient constructor(requestURL: String,
 		private const val LINE_FEED = "\r\n"
 	}
 
-	private val boundary: String
+	private val boundary: String = "===" + System.currentTimeMillis() + "==="
 	private val httpConn: HttpURLConnection
 	private val outputStream: OutputStream
 	private val writer: PrintWriter
 
 	init {
-		boundary = "===" + System.currentTimeMillis() + "==="
 		val url = URL(requestURL)
 		httpConn = url.openConnection() as HttpURLConnection
 		httpConn.useCaches = false
