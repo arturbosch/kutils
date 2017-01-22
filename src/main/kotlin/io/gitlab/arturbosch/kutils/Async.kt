@@ -11,8 +11,8 @@ import java.util.function.Supplier
  * Creates a new fixed thread pool with #cores threads and allows to execute commands on the
  * created execution service. The executor will automatically be closed.
  */
-fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
-					 block: ExecutorService.() -> T): T {
+inline fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
+							block: ExecutorService.() -> T): T {
 	return block.invoke(executor).apply {
 		executor.shutdown()
 	}
@@ -21,7 +21,7 @@ fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(co
 /**
  * Starts given block in a completable future with this executor.
  */
-fun <T> Executor.runAsync(block: () -> T): CompletableFuture<T> {
+inline fun <T> Executor.runAsync(crossinline block: () -> T): CompletableFuture<T> {
 	return task(this) { block() }
 }
 
@@ -29,7 +29,7 @@ fun <T> Executor.runAsync(block: () -> T): CompletableFuture<T> {
  * Starts given task as a completable future. If no executor is specialized, the common
  * thread pool is used for this.
  */
-fun <T> task(executor: Executor = ForkJoinPool.commonPool(), task: () -> T): CompletableFuture<T> {
+inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T> {
 	return CompletableFuture.supplyAsync(Supplier { task() }, executor)
 }
 

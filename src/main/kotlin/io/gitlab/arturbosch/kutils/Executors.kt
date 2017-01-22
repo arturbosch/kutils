@@ -12,15 +12,20 @@ val cores = Runtime.getRuntime().availableProcessors()
  * Allows to create a thread pool executors with customized thread factory.
  * @author Artur Bosch
  */
-fun withCustomThreadFactoryExecutor(threadFactory: ThreadFactory) =
-		ThreadPoolExecutor(cores, cores,
+fun withCustomThreadFactoryExecutor(threadFactory: ThreadFactory,
+									coreThreads: Int = cores,
+									maxThreads: Int = coreThreads) =
+		ThreadPoolExecutor(coreThreads, maxThreads,
 				0L, TimeUnit.MILLISECONDS,
 				LinkedBlockingQueue<Runnable>(),
 				threadFactory,
 				ThreadPoolExecutor.AbortPolicy())
 
-fun withNamedThreadPoolExecutor(name: String) =
-		withCustomThreadFactoryExecutor(PrefixedThreadFactory(name))
+fun withNamedThreadPoolExecutor(name: String,
+								coreThreads: Int = cores,
+								maxThreads: Int = coreThreads) =
+		withCustomThreadFactoryExecutor(
+				PrefixedThreadFactory(name), coreThreads, maxThreads)
 
 open class PrefixedThreadFactory(val namePrefix: String) : ThreadFactory {
 	private val group: ThreadGroup

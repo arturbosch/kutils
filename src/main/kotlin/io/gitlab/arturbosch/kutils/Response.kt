@@ -13,9 +13,9 @@ import java.nio.file.Path
 /**
  * @author Artur Bosch
  */
-class HttpClient constructor(requestURL: String,
-							 private val charset: String,
-							 headers: Map<String, String>) {
+class HttpFileUpload constructor(requestURL: String,
+								 private val charset: String,
+								 headers: Map<String, String>) {
 
 	companion object {
 		private const val LINE_FEED = "\r\n"
@@ -39,7 +39,7 @@ class HttpClient constructor(requestURL: String,
 	}
 
 	@Throws(IOException::class)
-	fun addFormField(name: String, value: String): HttpClient {
+	fun addFormField(name: String, value: String): HttpFileUpload {
 		writer.append("--").append(boundary).append(LINE_FEED)
 		writer.append("Content-Disposition: form-data; name=\"").append(name).append("\"").append(LINE_FEED)
 		writer.append("Content-Type: text/plain; charset=").append(charset).append(LINE_FEED)
@@ -50,7 +50,7 @@ class HttpClient constructor(requestURL: String,
 	}
 
 	@Throws(IOException::class)
-	fun addFilePart(fieldName: String, uploadFile: Path): HttpClient {
+	fun addFilePart(fieldName: String, uploadFile: Path): HttpFileUpload {
 		val fileName = uploadFile.fileName.toString()
 		writer.append("--").append(boundary).append(LINE_FEED)
 		writer.append("Content-Disposition: form-data; name=\"")

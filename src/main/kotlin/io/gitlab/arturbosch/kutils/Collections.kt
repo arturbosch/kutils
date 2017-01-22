@@ -41,7 +41,7 @@ fun <E> List<E>.replaceAt(index: Int, element: E): List<E> {
 /**
  * Only do something with this list if it is not empty.
  */
-fun <E> List<E>.ifNotEmpty(function: List<E>.() -> Unit) {
+inline fun <E> List<E>.ifNotEmpty(function: List<E>.() -> Unit) {
 	if (this.isNotEmpty()) {
 		function.invoke(this)
 	}
