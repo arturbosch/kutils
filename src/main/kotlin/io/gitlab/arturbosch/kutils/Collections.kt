@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.kutils
 
 import java.util.ArrayList
 import java.util.HashMap
+import java.util.LinkedHashMap
 
 /**
  * Transforms the list of pairs to a map, applying a merge strategy for same keys.
@@ -12,6 +13,16 @@ fun <K, V> List<Pair<K, List<V>>>.toMergedMap(): Map<K, List<V>> {
 		map.merge(it.first, it.second.toMutableList(), { l1, l2 -> l1.apply { addAll(l2) } })
 	}
 	return map
+}
+
+/**
+ * Merges two maps into one map. Uses a reduce function for clashes. Default reduce is to replace the element.
+ */
+fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { a, b -> b }): Map<K, V> {
+	val result = LinkedHashMap<K, V>(this.size + other.size)
+	result.putAll(this)
+	other.forEach { e -> result[e.key] = result[e.key]?.let { reduce(e.value, it) } ?: e.value }
+	return result
 }
 
 /**
