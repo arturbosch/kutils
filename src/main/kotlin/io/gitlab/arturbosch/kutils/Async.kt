@@ -40,3 +40,11 @@ fun <T> awaitAll(futures: List<CompletableFuture<T>>): List<T> {
 	CompletableFuture.allOf(*futures.toTypedArray()).join()
 	return futures.map { it.get() }
 }
+
+/**
+ * Awaits the execution of all given completable futures. Returns the results of the futures.
+ */
+fun <T> awaitAll(vararg futures: CompletableFuture<T>): List<T> {
+	CompletableFuture.allOf(*futures).join()
+	return futures.map { it.get() }
+}
