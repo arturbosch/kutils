@@ -46,3 +46,12 @@ inline fun <E> List<E>.ifNotEmpty(function: List<E>.() -> Unit) {
 		function.invoke(this)
 	}
 }
+
+/**
+ * Inspects all elements and invokes given block on each element. Does not modify the collection.
+ */
+inline fun <T> Collection<T>.peek(block: (T) -> Unit): Collection<T> {
+	for (element in this)
+		block.invoke(element)
+	return this
+}
