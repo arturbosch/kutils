@@ -52,7 +52,7 @@ fun <E> List<E>.replaceAt(index: Int, element: E): List<E> {
 /**
  * Only do something with this list if it is not empty.
  */
-inline fun <E> List<E>.ifNotEmpty(function: List<E>.() -> Unit) {
+inline fun <E> Collection<E>.ifNotEmpty(function: Collection<E>.() -> Unit) {
 	if (this.isNotEmpty()) {
 		function.invoke(this)
 	}
