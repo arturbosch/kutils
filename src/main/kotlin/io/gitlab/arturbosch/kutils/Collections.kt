@@ -26,6 +26,18 @@ fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { a, b 
 }
 
 /**
+ * Merges a key value pair into an existing map. Remaps the value if needed.
+ */
+inline fun <K, V> MutableMap<K, V>.merge(key: K, value: V, mergeFunction: (V, V) -> V) {
+	val oldValue = this[key]
+	if (oldValue == null) {
+		this.put(key, value)
+	} else {
+		this.put(key, mergeFunction(oldValue, value))
+	}
+}
+
+/**
  * Adds given element on position 0 without replacing any element.
  */
 fun <E> List<E>.plusElementAtBeginning(element: E): List<E> {
