@@ -4,6 +4,12 @@ package io.gitlab.arturbosch.kutils
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
+
+/**
+ * Converts this string to a path object.
+ */
+inline fun String.asPath(): Path = Paths.get(this)
 
 /**
  * Does this path represent a file?
