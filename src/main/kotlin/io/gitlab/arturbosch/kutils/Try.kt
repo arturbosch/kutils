@@ -11,6 +11,30 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 		}
 	}
 
+	infix inline fun <Result> then(block: (T) -> Result): Try<Result> {
+		return if (value != null) {
+			try {
+				Try(block.invoke(value), null)
+			} catch (any: Throwable) {
+				Try(null, any)
+			}
+		} else {
+			Try(null, error)
+		}
+	}
+
+	infix inline fun <Result> zip(block: (T) -> Try<Result>): Try<Result> {
+		return if (value != null) {
+			try {
+				block.invoke(value)
+			} catch (any: Throwable) {
+				Try(null, any)
+			}
+		} else {
+			Try(null, error)
+		}
+	}
+
 	infix inline fun onSuccess(block: (T) -> Unit): Try<T> {
 		if (value != null) {
 			block.invoke(value)
@@ -25,6 +49,14 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 		return this
 	}
 
+	infix inline fun <New> compose(block: (T?, Throwable?) -> New): Try<New> {
+		try {
+			return Try(block.invoke(value, error), null)
+		} catch (any: Throwable) {
+			return Try(null, any)
+		}
+	}
+
 	companion object {
 		inline fun <T> to(block: () -> T): Try<T> {
 			try {
@@ -36,4 +68,4 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 	}
 }
 
-fun <T> tryTo(block: () -> T): Try<T> = Try.to(block)
+inline fun <T> tryTo(block: () -> T): Try<T> = Try.to(block)
