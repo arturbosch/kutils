@@ -11,6 +11,19 @@ import kotlin.test.fail
 class TryTest {
 
 	@Test
+	fun tryAsInvoke() {
+		Try {
+			5
+		} then {
+			it * it
+		} onSuccess {
+			assertEquals(it, 25)
+		} onError {
+			fail()
+		}
+	}
+
+	@Test
 	fun valueAndErrorPresetIsLikeValueIsPresent() {
 		val value = Try(5, Throwable("ERROR"))
 		val value1 = value then { it * it }
