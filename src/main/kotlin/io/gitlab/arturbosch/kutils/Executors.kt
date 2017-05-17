@@ -14,18 +14,16 @@ val cores = Runtime.getRuntime().availableProcessors()
  */
 fun withCustomThreadFactoryExecutor(threadFactory: ThreadFactory,
 									coreThreads: Int = cores,
-									maxThreads: Int = coreThreads) =
-		ThreadPoolExecutor(coreThreads, maxThreads,
-				0L, TimeUnit.MILLISECONDS,
-				LinkedBlockingQueue<Runnable>(),
-				threadFactory,
-				ThreadPoolExecutor.AbortPolicy())
+									maxThreads: Int = coreThreads) = ThreadPoolExecutor(coreThreads, maxThreads,
+		0L, TimeUnit.MILLISECONDS,
+		LinkedBlockingQueue<Runnable>(),
+		threadFactory,
+		ThreadPoolExecutor.AbortPolicy())
 
 fun withNamedThreadPoolExecutor(name: String,
 								coreThreads: Int = cores,
-								maxThreads: Int = coreThreads) =
-		withCustomThreadFactoryExecutor(
-				PrefixedThreadFactory(name), coreThreads, maxThreads)
+								maxThreads: Int = coreThreads) = withCustomThreadFactoryExecutor(
+		PrefixedThreadFactory(name), coreThreads, maxThreads)
 
 open class PrefixedThreadFactory(val namePrefix: String) : ThreadFactory {
 	private val group: ThreadGroup

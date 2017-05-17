@@ -12,26 +12,20 @@ import java.util.function.Supplier
  * created execution service. The executor will automatically be closed.
  */
 inline fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
-							block: ExecutorService.() -> T): T {
-	return block.invoke(executor).apply {
-		executor.shutdown()
-	}
+							block: ExecutorService.() -> T) = block.invoke(executor).apply {
+	executor.shutdown()
 }
 
 /**
  * Starts given block in a completable future with this executor.
  */
-inline fun <T> Executor.runAsync(crossinline block: () -> T): CompletableFuture<T> {
-	return task(this) { block() }
-}
+inline fun <T> Executor.runAsync(crossinline block: () -> T) = task(this) { block() }
 
 /**
  * Starts given task as a completable future. If no executor is specialized, the common
  * thread pool is used for this.
  */
-inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T> {
-	return CompletableFuture.supplyAsync(Supplier { task() }, executor)
-}
+inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(Supplier { task() }, executor)
 
 /**
  * Awaits the execution of all given completable futures. Returns the results of the futures.

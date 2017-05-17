@@ -11,28 +11,24 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 		}
 	}
 
-	infix inline fun <Result> then(block: (T) -> Result): Try<Result> {
-		return if (value != null) {
-			try {
-				Try(block.invoke(value), null)
-			} catch (any: Throwable) {
-				Try(null, any)
-			}
-		} else {
-			Try(null, error)
+	infix inline fun <Result> then(block: (T) -> Result) = if (value != null) {
+		try {
+			Try(block.invoke(value), null)
+		} catch (any: Throwable) {
+			Try(null, any)
 		}
+	} else {
+		Try(null, error)
 	}
 
-	infix inline fun <Result> zip(block: (T) -> Try<Result>): Try<Result> {
-		return if (value != null) {
-			try {
-				block.invoke(value)
-			} catch (any: Throwable) {
-				Try(null, any)
-			}
-		} else {
-			Try(null, error)
+	infix inline fun <Result> zip(block: (T) -> Try<Result>) = if (value != null) {
+		try {
+			block.invoke(value)
+		} catch (any: Throwable) {
+			Try(null, any)
 		}
+	} else {
+		Try(null, error)
 	}
 
 	infix inline fun onSuccess(block: (T) -> Unit): Try<T> {
