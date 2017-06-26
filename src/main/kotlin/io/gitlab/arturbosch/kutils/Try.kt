@@ -45,12 +45,10 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 		return this
 	}
 
-	infix inline fun <New> compose(block: (T?, Throwable?) -> New): Try<New> {
-		try {
-			return Try(block.invoke(value, error), null)
-		} catch (any: Throwable) {
-			return Try(null, any)
-		}
+	infix inline fun <New> compose(block: (T?, Throwable?) -> New): Try<New> = try {
+		Try(block.invoke(value, error), null)
+	} catch (any: Throwable) {
+		Try(null, any)
 	}
 
 	companion object {

@@ -1,9 +1,9 @@
 buildscript {
-	ext.kotlin_version = '1.1.1'
+	ext.kotlin_version = '1.1.3'
 
 	repositories {
+		mavenLocal()
 		mavenCentral()
-		maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
 		jcenter()
 	}
 	dependencies {
@@ -13,15 +13,17 @@ buildscript {
 
 plugins {
 	id "com.jfrog.bintray" version "1.7.3"
-	id "io.gitlab.arturbosch.detekt" version "1.0.0.M10.2"
+	id "io.gitlab.arturbosch.detekt" version "1.0.0.M12.1"
 }
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'kotlin'
 
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
 group 'io.gitlab.arturbosch'
-version '0.1.5'
+version '0.1.6'
 
 uploadArchives {
 	repositories {
@@ -33,20 +35,23 @@ uploadArchives {
 
 repositories {
 	mavenCentral()
+	mavenLocal()
+}
+
+
+detekt {
+	version = "1.0.0.M12.1"
+	profile("main") {
+		input = "$project.projectDir"
+		filters = ".*/test/.*, .*/resources/.*, .*/build/.*"
+		config = "$project.projectDir/default-detekt-config.yml"
+	}
 }
 
 dependencies {
 	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-	compile "org.jetbrains.kotlin:kotlinx-stdlib:$kotlin_version"
 	testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
 	testCompile "junit:junit:4.12"
-}
-
-detekt {
-	version = "1.0.0.M10.1"
-	input = "$input/src/main/kotlin"
-	config = "$project.projectDir/../detekt/default-detekt-config.yml"
-	debug = true
 }
 
 bintray {

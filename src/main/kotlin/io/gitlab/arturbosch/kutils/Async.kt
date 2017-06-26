@@ -25,7 +25,8 @@ inline fun <T> Executor.runAsync(crossinline block: () -> T) = task(this) { bloc
  * Starts given task as a completable future. If no executor is specialized, the common
  * thread pool is used for this.
  */
-inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(Supplier { task() }, executor)
+inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T>
+		= CompletableFuture.supplyAsync(Supplier { task() }, executor)
 
 /**
  * Awaits the execution of all given completable futures. Returns the results of the futures.
