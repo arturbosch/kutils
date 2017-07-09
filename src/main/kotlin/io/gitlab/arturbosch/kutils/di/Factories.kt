@@ -28,9 +28,11 @@ class SingletonFactory<out T> private constructor(val factory: Factory<T>) : Fac
 	@Suppress("UNCHECKED_CAST")
 	override fun get(): T {
 		if (value == null) {
-			value = factory.get()
+			synchronized(this) {
+				value = factory.get()
+			}
 		}
-		return value as T
+		return value!!
 	}
 
 	companion object {

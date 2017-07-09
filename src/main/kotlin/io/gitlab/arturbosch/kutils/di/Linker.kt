@@ -1,7 +1,5 @@
 package io.gitlab.arturbosch.kutils.di
 
-import java.lang.invoke.MethodHandles
-import java.lang.invoke.MethodType
 import java.lang.reflect.Constructor
 import java.util.HashMap
 
@@ -16,6 +14,12 @@ class Linker {
 	fun <T> install(key: Class<T>, factory: Factory<T>) {
 		factories.put(key, factory)
 	}
+
+	inline fun <reified T> install(factory: Factory<T>) {
+		install(T::class.java, factory)
+	}
+
+	inline fun <reified T> factoryFor() = factoryFor(T::class.java)
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T> factoryFor(key: Class<T>): Factory<T> {
@@ -57,10 +61,4 @@ class Linker {
 		return constructor ?: noArgConstructor
 	}
 
-
-	inline fun <reified T> install(factory: Factory<T>) {
-		install(T::class.java, factory)
-	}
-
-	inline fun <reified T> factoryFor() = factoryFor(T::class.java)
 }
