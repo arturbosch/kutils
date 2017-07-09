@@ -1,6 +1,8 @@
 package io.gitlab.arturbosch.kutils.di
 
 import java.io.PrintStream
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
 /**
@@ -8,26 +10,32 @@ import kotlin.system.measureTimeMillis
  */
 
 fun main(args: Array<String>) {
-	measureTimeMillis {
-		val graph = buildObjectGraph()
-		val handler = graph.get(VisitHandler::class.java)
-		val handler2 = graph.get(VisitHandler::class.java)
-		val counter = graph.get<Counter>()
-		handler.visit()
-		handler2.visit()
-		println(counter.counter)
-	}.apply { println("Millis needed: " + this) }
+	val graph = buildObjectGraph()
+	val thread = thread {
+		measureTimeMillis {
+			val handler = graph.get(VisitHandler::class.java)
+			val counter = graph.get<Counter>()
+			handler.visit()
+			println(counter.counter)
+		}.apply { println("Millis needed: " + this) }
+	}
+	val thread2 = thread {
+		measureTimeMillis {
+			val handler = graph.get(VisitHandler::class.java)
+			val counter = graph.get<Counter>()
+			handler.visit()
+			println(counter.counter)
+		}.apply { println("Millis needed: " + this) }
+	}
 
+	thread.join()
+	thread2.join()
 }
 
 fun buildObjectGraph(): ObjectGraph {
-	val linker = Linker()
-	installFactories(linker)
-	return ObjectGraph(linker)
-}
-
-fun installFactories(linker: Linker) {
+	val linker = Linker(true)
 	linker.install<PrintStream>(ValueFactory.of(System.out))
+	return ObjectGraph(linker)
 }
 
 class VisitHandler @Inject constructor(val counter: Counter, val logger: Logger) {
@@ -39,10 +47,8 @@ class VisitHandler @Inject constructor(val counter: Counter, val logger: Logger)
 
 @Singleton
 class Counter {
-	var counter: Int = 0
-	fun inc() {
-		counter++
-	}
+	var counter = AtomicInteger(0)
+	fun inc() = counter.incrementAndGet()
 }
 
 data class Logger @Inject constructor(val out: PrintStream) {

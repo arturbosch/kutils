@@ -29,7 +29,9 @@ class SingletonFactory<out T> private constructor(val factory: Factory<T>) : Fac
 	override fun get(): T {
 		if (value == null) {
 			synchronized(this) {
-				value = factory.get()
+				if (value == null) {
+					value = factory.get()
+				}
 			}
 		}
 		return value!!
@@ -62,5 +64,3 @@ class ReflectiveFactory<T>(val constructor: Constructor<T>) : Factory<T>() {
 		}
 	}
 }
-
-class DependencyInjectionFailure(e: Throwable) : RuntimeException(e)
