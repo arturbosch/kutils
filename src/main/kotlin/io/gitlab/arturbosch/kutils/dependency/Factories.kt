@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.kutils.di
+package io.gitlab.arturbosch.kutils.dependency
 
 import java.lang.reflect.Constructor
 import java.util.ArrayList

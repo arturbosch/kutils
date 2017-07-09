@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.kutils.di
+package io.gitlab.arturbosch.kutils.dependency
 
 import java.io.PrintStream
 import java.util.concurrent.atomic.AtomicInteger

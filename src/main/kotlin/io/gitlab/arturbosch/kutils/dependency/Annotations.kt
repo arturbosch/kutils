@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.kutils.di
+package io.gitlab.arturbosch.kutils.dependency
 
 /**
  * @author Artur Bosch
