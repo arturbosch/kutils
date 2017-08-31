@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.kutils.dependency
 import java.lang.reflect.Constructor
 import java.util.ArrayList
 
-
 /**
  * @author Artur Bosch
  */
@@ -13,7 +12,7 @@ abstract class Factory<out T> {
 	open fun link(linker: Linker) {}
 }
 
-class ValueFactory<out T> private constructor(val value: T) : Factory<T>() {
+class ValueFactory<out T> private constructor(private val value: T) : Factory<T>() {
 	override fun get() = value
 
 	companion object {
@@ -21,7 +20,7 @@ class ValueFactory<out T> private constructor(val value: T) : Factory<T>() {
 	}
 }
 
-class SingletonFactory<out T> private constructor(val factory: Factory<T>) : Factory<T>() {
+class SingletonFactory<out T> private constructor(private val factory: Factory<T>) : Factory<T>() {
 
 	private var value: T? = null
 
@@ -42,7 +41,7 @@ class SingletonFactory<out T> private constructor(val factory: Factory<T>) : Fac
 	}
 }
 
-class ReflectiveFactory<T>(val constructor: Constructor<T>) : Factory<T>() {
+class ReflectiveFactory<out T>(private val constructor: Constructor<T>) : Factory<T>() {
 
 	private val factories = ArrayList<Factory<*>>()
 

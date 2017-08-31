@@ -13,7 +13,8 @@ buildscript {
 
 plugins {
 	id "com.jfrog.bintray" version "1.7.3"
-	id "io.gitlab.arturbosch.detekt" version "1.0.0.M12.1"
+	id "io.gitlab.arturbosch.detekt" version "1.0.0.RC3"
+	id 'org.sonarqube' version '2.5'
 }
 
 apply plugin: 'maven'
@@ -40,7 +41,7 @@ repositories {
 
 
 detekt {
-	version = "1.0.0.M12.1"
+	version = "1.0.0.RC3"
 	profile("main") {
 		input = "$project.projectDir"
 		filters = ".*/test/.*, .*/resources/.*, .*/build/.*"

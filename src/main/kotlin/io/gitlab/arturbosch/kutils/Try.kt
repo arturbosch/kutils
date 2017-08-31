@@ -54,12 +54,10 @@ data class Try<out T>(val value: T?, val error: Throwable?) {
 	companion object {
 		operator inline fun <T> invoke(block: () -> T): Try<T> = Companion.to(block)
 
-		inline fun <T> to(block: () -> T): Try<T> {
-			try {
-				return Try(block.invoke(), null)
-			} catch (any: Throwable) {
-				return Try(null, any)
-			}
+		inline fun <T> to(block: () -> T): Try<T> = try {
+			Try(block.invoke(), null)
+		} catch (any: Throwable) {
+			Try(null, any)
 		}
 	}
 }

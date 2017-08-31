@@ -13,8 +13,8 @@ enum class SingleAssignThreadSafetyMode {
 
 fun <T> singleAssign(threadSafetyMode: SingleAssignThreadSafetyMode
 					 = SingleAssignThreadSafetyMode.SYNCHRONIZED): SingleAssign<T> =
-		if (threadSafetyMode == SingleAssignThreadSafetyMode.SYNCHRONIZED) SynchronizedSingleAssign<T>()
-		else UnsynchronizedSingleAssign<T>()
+		if (threadSafetyMode == SingleAssignThreadSafetyMode.SYNCHRONIZED) SynchronizedSingleAssign()
+		else UnsynchronizedSingleAssign()
 
 private object UNINITIALIZED_VALUE
 

@@ -52,7 +52,7 @@ class ObjectGraphTest {
 	}
 }
 
-class VisitHandler @Inject constructor(val counter: Counter, val logger: Logger) {
+class VisitHandler @Inject constructor(val counter: Counter, private val logger: Logger) {
 	fun visit() {
 		counter.inc()
 		logger.log("Hello no. ${counter.number}")
@@ -65,7 +65,7 @@ class Counter {
 	fun inc() = number.incrementAndGet()
 }
 
-data class Logger @Inject constructor(val out: PrintStream) {
+data class Logger @Inject constructor(private val out: PrintStream) {
 	fun log(msg: String) {
 		out.println(msg)
 	}

@@ -25,7 +25,7 @@ fun withNamedThreadPoolExecutor(name: String,
 								maxThreads: Int = coreThreads) = withCustomThreadFactoryExecutor(
 		PrefixedThreadFactory(name), coreThreads, maxThreads)
 
-open class PrefixedThreadFactory(val namePrefix: String) : ThreadFactory {
+open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory {
 	private val group: ThreadGroup
 	private val threadNumber = AtomicInteger(1)
 	private val name: String
