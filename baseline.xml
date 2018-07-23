@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist timestamp="1532376381009"></Blacklist>
+  <Whitelist timestamp="1532376385893">
+    <ID>MatchingDeclarationName:Executors.kt$io.gitlab.arturbosch.kutils.Executors.kt</ID>
+    <ID>MatchingDeclarationName:Logging.kt$io.gitlab.arturbosch.kutils.Logging.kt</ID>
+    <ID>MatchingDeclarationName:Processes.kt$io.gitlab.arturbosch.kutils.Processes.kt</ID>
+    <ID>MatchingDeclarationName:Response.kt$io.gitlab.arturbosch.kutils.Response.kt</ID>
+    <ID>SpreadOperator:Async.kt$(*futures)</ID>
+    <ID>SpreadOperator:Async.kt$(*futures.toTypedArray())</ID>
+    <ID>SpreadOperator:Factories.kt$ReflectiveFactory$(*dependencies)</ID>
+    <ID>TooGenericExceptionCaught:Try.kt$Try$any: Throwable</ID>
+    <ID>TooGenericExceptionCaught:Try.kt$Try.Companion$any: Throwable</ID>
+    <ID>TooGenericExceptionThrown:TryTest.kt$TryTest$throw Throwable()</ID>
+  </Whitelist>
+</SmellBaseline>
