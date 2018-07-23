@@ -44,7 +44,7 @@ inline fun Path.readText() = String(Files.readAllBytes(this))
 /**
  * Reads all lines of the file represented by this path.
  */
-inline fun Path.readLines() = Files.readAllLines(this)
+inline fun Path.readLines(): MutableList<String> = Files.readAllLines(this)
 
 /**
  * Copies content of this path to target path.
@@ -54,4 +54,4 @@ inline fun Path.copy(target: Path): Path = Files.copy(this, target)
 /**
  * Shortcut to write the content of a string to a file.
  */
-inline fun Path.write(content: String) = Files.write(this, content.toByteArray())
+inline fun Path.write(content: String): Path = Files.write(this, content.toByteArray())

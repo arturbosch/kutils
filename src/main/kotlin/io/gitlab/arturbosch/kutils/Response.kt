@@ -32,7 +32,7 @@ class HttpFileUpload constructor(requestURL: String,
 		httpConn.useCaches = false
 		httpConn.doOutput = true
 		httpConn.doInput = true
-		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary)
+		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
 		headers.forEach { httpConn.setRequestProperty(it.key, it.value) }
 		outputStream = httpConn.outputStream
 		writer = PrintWriter(OutputStreamWriter(outputStream, charset), true)
@@ -91,7 +91,7 @@ class HttpFileUpload constructor(requestURL: String,
 				response
 			})
 		} else {
-			Response.Failure(status, IOException("Server returned non-OK status: " + status))
+			Response.Failure(status, IOException("Server returned non-OK status: $status"))
 		}
 	}
 
@@ -105,14 +105,14 @@ class HttpFileUpload constructor(requestURL: String,
 		abstract fun body(): List<String>
 		abstract fun errorBody(): Exception
 
-		class Success(status: Int, val content: List<String>) : Response(status) {
+		class Success(status: Int, private val content: List<String>) : Response(status) {
 			override fun success(): Boolean = true
 			override fun failure(): Boolean = false
 			override fun body(): List<String> = content
 			override fun errorBody(): Exception = throw IllegalStateException("No error for success response.")
 		}
 
-		class Failure(status: Int, val error: IOException) : Response(status) {
+		class Failure(status: Int, private val error: IOException) : Response(status) {
 			override fun success(): Boolean = false
 			override fun failure(): Boolean = true
 			override fun body(): List<String> = throw error

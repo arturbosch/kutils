@@ -41,7 +41,7 @@ class Linker(private val threadSafe: Boolean = false) {
 	}
 
 	private fun <T> loadLinkedFactory(key: Class<T>): Factory<*> {
-		println("Link factory for " + key)
+		println("Link factory for $key")
 		val factory = loadFactory(key)
 		factory.link(this)
 		linkedFactories.put(key, factory)

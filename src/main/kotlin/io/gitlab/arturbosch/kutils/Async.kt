@@ -11,7 +11,7 @@ import java.util.function.Supplier
  * Creates a new fixed thread pool with #cores threads and allows to execute commands on the
  * created execution service. The executor will automatically be closed.
  */
-inline fun <T> withExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
+inline fun <T> useExecutor(executor: ExecutorService = Executors.newFixedThreadPool(cores),
 							block: ExecutorService.() -> T) = block.invoke(executor).apply {
 	executor.shutdown()
 }

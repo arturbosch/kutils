@@ -10,7 +10,7 @@ import java.util.LinkedHashMap
 fun <K, V> List<Pair<K, List<V>>>.toMergedMap(): Map<K, List<V>> {
 	val map = HashMap<K, MutableList<V>>()
 	this.forEach {
-		map.merge(it.first, it.second.toMutableList(), { l1, l2 -> l1.apply { addAll(l2) } })
+		map.merge(it.first, it.second.toMutableList()) { l1, l2 -> l1.apply { addAll(l2) } }
 	}
 	return map
 }
@@ -31,9 +31,9 @@ fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b 
 inline fun <K, V> MutableMap<K, V>.merge(key: K, value: V, mergeFunction: (V, V) -> V) {
 	val oldValue = this[key]
 	if (oldValue == null) {
-		this.put(key, value)
+		this[key] = value
 	} else {
-		this.put(key, mergeFunction(oldValue, value))
+		this[key] = mergeFunction(oldValue, value)
 	}
 }
 
