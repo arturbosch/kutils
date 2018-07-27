@@ -22,7 +22,7 @@ apply plugin: 'kotlin'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
 group 'io.gitlab.arturbosch'
-version '0.2.0'
+version '0.2.1'
 
 uploadArchives {
 	repositories {

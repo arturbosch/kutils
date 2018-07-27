@@ -2,6 +2,7 @@
 
 package io.gitlab.arturbosch.kutils
 
+import java.io.BufferedReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -55,3 +56,8 @@ inline fun Path.copy(target: Path): Path = Files.copy(this, target)
  * Shortcut to write the content of a string to a file.
  */
 inline fun Path.write(content: String): Path = Files.write(this, content.toByteArray())
+
+/**
+ * Opens a buffered reader from this path.
+ */
+inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
