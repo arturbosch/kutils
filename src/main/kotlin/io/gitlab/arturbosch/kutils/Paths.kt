@@ -61,3 +61,16 @@ inline fun Path.write(content: String): Path = Files.write(this, content.toByteA
  * Opens a buffered reader from this path.
  */
 inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
+
+/**
+ * Creates system file based on this path. Also creates all parent directories.
+ */
+inline fun Path.createFile(): Path = this.apply {
+	parent.createDir()
+	Files.createFile(this)
+}
+
+/**
+ * Creates system folder based on this path.
+ */
+inline fun Path.createDir(): Path = Files.createDirectories(this)
