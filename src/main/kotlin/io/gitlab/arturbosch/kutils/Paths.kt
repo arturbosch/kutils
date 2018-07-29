@@ -6,6 +6,7 @@ import java.io.BufferedReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.streams.asSequence
 
 /**
  * Converts this string to a path object.
@@ -74,3 +75,13 @@ inline fun Path.createFile(): Path = this.apply {
  * Creates system folder based on this path.
  */
 inline fun Path.createDir(): Path = Files.createDirectories(this)
+
+/**
+ * Streams over all paths inside this path.
+ * Optionally you can exclude the base path (= this path) from the stream.
+ */
+inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
+		when (excludeRoot) {
+			true -> Files.walk(this).asSequence().filter { it != this }
+			else -> Files.walk(this).asSequence()
+		}
