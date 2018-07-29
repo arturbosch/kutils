@@ -6,8 +6,8 @@ package io.gitlab.arturbosch.kutils
 data class Try<out T>(val value: T?, val error: Throwable?) {
 
 	init {
-		require(value != null || error != null) {
-			"Value of Try must not be evaluated to null!"
+		require((value != null) xor (error != null)) {
+			"Value or Error are exclusive states. Value is '$value' and error is '$error'"
 		}
 	}
 

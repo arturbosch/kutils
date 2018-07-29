@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.kutils
 
-import org.junit.Test
+import io.kotlintest.specs.StringSpec
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import java.nio.file.Files
 import kotlin.test.assertEquals
@@ -10,11 +10,10 @@ import kotlin.test.fail
 /**
  * @author Artur Bosch
  */
-class ProcessesTest {
+@EnabledIfSystemProperty(named = "os.name", matches = "*Linux*")
+class ProcessesSpec : StringSpec({
 
-	@Test
-	@EnabledIfSystemProperty(named = "os.name", matches = "*Linux*")
-	fun successful() {
+	"it should start and consume a process" {
 		val (out, err, status) =
 				process(listOf("ls", "-lA"), Files.createTempDirectory("kutils").toFile())
 						.consume()
@@ -25,4 +24,4 @@ class ProcessesTest {
 		assertTrue(out.isNotEmpty())
 		assertTrue(err.isEmpty())
 	}
-}
+})

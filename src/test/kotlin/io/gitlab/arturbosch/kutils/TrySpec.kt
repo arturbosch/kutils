@@ -1,17 +1,18 @@
 package io.gitlab.arturbosch.kutils
 
-import org.junit.Test
+import io.kotlintest.specs.StringSpec
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
 /**
  * @author Artur Bosch
  */
-class TryTest {
+class TrySpec : StringSpec({
 
-	@Test
-	fun tryAsInvoke() {
+	"it should be able to use the Try invoke function" {
 		Try {
 			5
 		} then {
@@ -23,16 +24,14 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun valueAndErrorPresetIsLikeValueIsPresent() {
-		val value = Try(5, Throwable("ERROR"))
-		val value1 = value then { it * it }
-		assertEquals(value1.value, 25)
-		assertEquals(value1.error, null)
+	"only result or error are allowed" {
+		assertFails { Try(5, Throwable("ERROR")) }
+		assertFails { Try(null, null) }
+		assertNotNull(Try(5, null))
+		assertNotNull(Try(null, Throwable("ERROR")))
 	}
 
-	@Test
-	fun tryOnSuccess() {
+	"it should not fail with error" {
 		tryTo {
 			"Hello World"
 		} onError {
@@ -40,8 +39,7 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun tryOnError() {
+	"it should fail with error" {
 		tryTo {
 			throw Throwable()
 		} onSuccess {
@@ -49,8 +47,7 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun valueOfNullResultsInError() {
+	"null as result throws illegal argument exception" {
 		tryTo {
 			null
 		} onSuccess {
@@ -60,8 +57,7 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun tryThenThenCascade() {
+	"try then-cascades are possible" {
 		tryTo {
 			5
 		} then {
@@ -75,8 +71,7 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun tryWithZip() {
+	"zip function should make one try out of two" {
 		fun double(x: Int) = Try(x * x, null)
 		tryTo {
 			5
@@ -89,8 +84,7 @@ class TryTest {
 		}
 	}
 
-	@Test
-	fun tryWithCompose() {
+	"compose can be used to test both the result and exception states" {
 		tryTo {
 			5
 		} compose { value, _ ->
@@ -101,4 +95,4 @@ class TryTest {
 			fail()
 		}
 	}
-}
+})

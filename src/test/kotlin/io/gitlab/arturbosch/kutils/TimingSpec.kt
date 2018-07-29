@@ -1,19 +1,18 @@
 package io.gitlab.arturbosch.kutils
 
-import org.junit.Test
+import io.kotlintest.specs.StringSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
  * @author Artur Bosch
  */
-class TimingTest {
+class TimingSpec : StringSpec({
 
-	@Test
-	fun timing() {
+	"it should return the time in long plus the result" {
 		val (time, result) = measureAndReturn { "Hi" }
 
 		assertTrue(time >= 0)
 		assertEquals(result, "Hi")
 	}
-}
+})
