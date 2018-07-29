@@ -41,7 +41,7 @@ class TrySpec : StringSpec({
 
 	"it should fail with error" {
 		tryTo {
-			throw Throwable()
+			throw IllegalStateException()
 		} onSuccess {
 			fail()
 		}
