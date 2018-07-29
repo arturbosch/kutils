@@ -52,6 +52,15 @@ dependencies {
 	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 	testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
 	testCompile "junit:junit:4.12"
+	testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.7'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
 }
 
 bintray {
