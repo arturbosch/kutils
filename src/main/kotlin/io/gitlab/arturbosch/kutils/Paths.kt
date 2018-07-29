@@ -6,6 +6,7 @@ import java.io.BufferedReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
 import kotlin.streams.asSequence
 
 /**
@@ -49,6 +50,11 @@ inline fun Path.readText() = String(Files.readAllBytes(this))
 inline fun Path.readLines(): MutableList<String> = Files.readAllLines(this)
 
 /**
+ * Streams all lines of the file represented by this path.
+ */
+inline fun Path.streamLines(): Sequence<String> = Files.lines(this).asSequence()
+
+/**
  * Copies content of this path to target path.
  */
 inline fun Path.copy(target: Path): Path = Files.copy(this, target)
@@ -68,7 +74,9 @@ inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
  */
 inline fun Path.createFile(): Path = this.apply {
 	parent.createDir()
-	Files.createFile(this)
+	if (this.notExists()) {
+		Files.createFile(this)
+	}
 }
 
 /**
@@ -85,3 +93,19 @@ inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
 			true -> Files.walk(this).asSequence().filter { it != this }
 			else -> Files.walk(this).asSequence()
 		}
+
+/**
+ * Tests if this path exists, if not make it nullable.
+ */
+fun Path.ifExists(): Path? = if (Files.exists(this)) this else null
+
+/**
+ * Tests if this path does not exist to make it nullable
+ */
+fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
+
+/**
+ * Appends given [content] to this file.
+ */
+fun Path.append(content: String): Path =
+		Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
