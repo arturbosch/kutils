@@ -11,7 +11,7 @@ buildscript {
 
 plugins {
 	id "com.jfrog.bintray" version "1.8.4"
-	id "io.gitlab.arturbosch.detekt" version "1.0.0.RC8"
+	id "io.gitlab.arturbosch.detekt" version "1.0.0-rework-beta4"
 	id 'org.sonarqube' version '2.6.2'
 }
 
@@ -35,17 +35,14 @@ uploadArchives {
 repositories {
 	mavenCentral()
 	mavenLocal()
+	jcenter()
 }
 
 
 detekt {
-	version = "1.0.0.RC8"
-	defaultProfile {
-		input = "$project.projectDir"
-		filters = ".*/resources/.*, .*/build/.*"
-		config = "$project.projectDir/default-detekt-config.yml"
-		baseline = "$project.projectDir/baseline.xml"
-	}
+	filters = ".*/resources/.*, .*/build/.*"
+	config = files("$projectDir/default-detekt-config.yml")
+	baseline = file("$projectDir/baseline.xml")
 }
 
 dependencies {
