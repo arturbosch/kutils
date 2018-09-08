@@ -78,3 +78,25 @@ inline fun <T> Collection<T>.peek(block: (T) -> Unit): Collection<T> {
 		block.invoke(element)
 	return this
 }
+
+/**
+ * Transforms the collection into a LinkedHashMap by using key and value functions.
+ */
+inline fun <T, K, V> Collection<T>.toMap(keyFunction: (T) -> K, valueFunction: (T) -> V): Map<K, V> {
+	val result = LinkedHashMap<K, V>()
+	for (element in this) {
+		result[keyFunction(element)] = valueFunction(element)
+	}
+	return result
+}
+
+/**
+ * Transforms the collection into a HashMap by using key and value functions.
+ */
+inline fun <T, K, V> Collection<T>.toHashMap(keyFunction: (T) -> K, valueFunction: (T) -> V): HashMap<K, V> {
+	val result = HashMap<K, V>()
+	for (element in this) {
+		result[keyFunction(element)] = valueFunction(element)
+	}
+	return result
+}
