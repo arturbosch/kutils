@@ -3,7 +3,7 @@ package io.gitlab.arturbosch.kutils
 import java.io.File
 
 /**
- * @author Artur Bosch
+ * Data class for result of a process execution.
  */
 data class ProcessStatus(val out: List<String>, val err: List<String>, val code: Int) {
 
@@ -23,6 +23,9 @@ data class ProcessStatus(val out: List<String>, val err: List<String>, val code:
 
 }
 
+/**
+ * Spawns a process with given arguments. A working directory is optional.
+ */
 fun process(args: List<String>, directory: File = File(".")): Process {
 	check(directory.exists()) { "'$directory' must exist." }
 	return ProcessBuilder()
@@ -31,6 +34,10 @@ fun process(args: List<String>, directory: File = File(".")): Process {
 			.start()
 }
 
+/**
+ * Helper function to consume a process e.g. blocking until input and error streams
+ * are fully read.
+ */
 fun Process.consume(): ProcessStatus {
 	val out = this.inputStream.bufferedReader().readLines()
 	val err = this.errorStream.bufferedReader().readLines()

@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.kutils
 
 /**
- * @author Artur Bosch
+ * Measures execution time in millis and returns the result of given bock.
  */
 inline fun <T> measureAndReturn(block: () -> T): Pair<Long, T> {
 	val start = System.currentTimeMillis()

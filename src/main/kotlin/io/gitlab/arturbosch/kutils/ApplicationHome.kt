@@ -5,7 +5,9 @@ import java.nio.file.Path
 import java.util.HashMap
 
 /**
- * @author Artur Bosch
+ * An ApplicationHome represents the home directory of your application.
+ * It is located at the `baseDir` on the file system.
+ * Convenient functions can resolve/create files and directories within the home directory.
  */
 interface ApplicationHome {
 
