@@ -12,7 +12,7 @@ buildscript {
 plugins {
 	id 'com.github.ben-manes.versions' version '0.20.0'
 	id "com.jfrog.bintray" version "1.8.4"
-	id "io.gitlab.arturbosch.detekt" version "1.0.0-rework-beta4"
+	id "io.gitlab.arturbosch.detekt" version "1.0.0.RC9"
 	id 'org.sonarqube' version '2.6.2'
 }
 
@@ -86,9 +86,15 @@ bintray {
 	}
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
 publishing {
 	publications {
 		kutils(MavenPublication) {
+			artifact sourcesJar
 			from components.java
 			groupId project.group
 			artifactId project.name
