@@ -2,6 +2,7 @@
 
 package io.gitlab.arturbosch.kutils
 
+import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.util.concurrent.ConcurrentHashMap
 
@@ -13,8 +14,8 @@ interface Injektor {
 	@Throws(InvalidDependency::class)
 	fun <T : Any> get(type: Type): T
 
-	fun <T : Any> addFactory(type: Type, factory: () -> T)
-	fun <T : Any> addSingletonFactory(type: Type, factory: () -> T)
+	fun <T : Any> addFactory(typeReference: TypeReference<T>, factory: () -> T)
+	fun <T : Any> addSingletonFactory(typeReference: TypeReference<T>, factory: () -> T)
 }
 
 /**
@@ -30,12 +31,12 @@ open class DefaultInjektor : Injektor {
 		return factory.produce() as T
 	}
 
-	override fun <T : Any> addFactory(type: Type, factory: () -> T) {
-		factories[type] = Factory.ProducingFactory(factory)
+	override fun <T : Any> addFactory(typeReference: TypeReference<T>, factory: () -> T) {
+		factories[typeReference.type] = Factory.ProducingFactory(factory)
 	}
 
-	override fun <T : Any> addSingletonFactory(type: Type, factory: () -> T) {
-		factories[type] = Factory.SingletonFactory(factory)
+	override fun <T : Any> addSingletonFactory(typeReference: TypeReference<T>, factory: () -> T) {
+		factories[typeReference.type] = Factory.SingletonFactory(factory)
 	}
 }
 
@@ -64,16 +65,39 @@ class InvalidDependency(type: Type) : IllegalStateException("No '$type' register
 
 /* Kotlin convenience functions. */
 
-inline fun <reified T : Any> Injektor.get(): T = get(T::class.java)
+inline fun <reified T : Any> Injektor.get(): T = get(typeRef<T>().type)
 
 inline fun <reified T : Any> Injektor.addSingleton(instance: T) {
-	addSingletonFactory(T::class.java) { instance }
+	addSingletonFactory(typeRef()) { instance }
 }
 
 inline fun <reified T : Any> Injektor.addSingletonFactory(noinline instance: () -> T) {
-	addSingletonFactory(T::class.java, instance)
+	addSingletonFactory(typeRef(), instance)
 }
 
 inline fun <reified T : Any> Injektor.addFactory(noinline instance: () -> T) {
-	addFactory(T::class.java, instance)
+	addFactory(typeRef(), instance)
+}
+
+// type reference highly inspired by https://github.com/kohesive/injekt/
+
+inline fun <reified T : Any> typeRef(): FullTypeReference<T> = object : FullTypeReference<T>() {}
+
+@Suppress("unused")
+interface TypeReference<T> {
+	val type: Type
+}
+
+/**
+ * Wraps the real type. Adapted from Injekt.
+ */
+abstract class FullTypeReference<T> protected constructor() : TypeReference<T> {
+	override val type: Type = javaClass.genericSuperclass.let { superClass ->
+		if (superClass is Class<*>) {
+			throw IllegalArgumentException("TypeReference constructed without actual type information")
+		}
+		val typeArguments = (superClass as ParameterizedType).actualTypeArguments
+		check(typeArguments.size == 1) { "A type reference must exactly contain one type argument." }
+		typeArguments[0]
+	}
 }

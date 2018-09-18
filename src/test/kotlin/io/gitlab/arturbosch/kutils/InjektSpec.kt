@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.kutils
 import io.kotlintest.Description
 import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.BehaviorSpec
 import java.io.PrintStream
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,12 +43,53 @@ class InjektSpec : BehaviorSpec({
 			}
 		}
 	}
+
+	given("generic classes") {
+
+		`when`("using different types of a generic class") {
+
+			Injekt.addSingleton(Box<Int>("box-of-int"))
+			Injekt.addSingleton(IntBox())
+			Injekt.addSingleton(Box<String>("box-of-string"))
+			Injekt.addSingleton(Box<List<Int>>("box-of-list-of-int"))
+			Injekt.addSingleton(Box<List<String>>("box-of-list-of-string"))
+			Injekt.addSingleton(Box<Map<String, List<Set<Int>>>>("box-of-map-of-string-and-list-of-set-of-int"))
+
+			then("each individual generic type is returned") {
+				val intBox: Box<Int> = Injekt.get()
+				val intBox2: IntBox = Injekt.get()
+				val stringBox: Box<String> = Injekt.get()
+				val string2Box: Box<String> = Injekt.get()
+				val listIntBox: Box<List<Int>> = Injekt.get()
+				val listStringBox: Box<List<String>> = Injekt.get()
+				val mapBox: Box<Map<String, List<Set<Int>>>> = Injekt.get()
+				intBox.name shouldBe "box-of-int"
+				intBox2.name shouldBe "int-box"
+				stringBox.name shouldBe "box-of-string"
+				listIntBox.name shouldBe "box-of-list-of-int"
+				listStringBox.name shouldBe "box-of-list-of-string"
+				listStringBox.name shouldBe "box-of-list-of-string"
+				mapBox.name shouldBe "box-of-map-of-string-and-list-of-set-of-int"
+				stringBox shouldBe string2Box
+			}
+		}
+
+		and("unregistered type throw errors") {
+			shouldThrow<InvalidDependency> { Injekt.get<Box<Any>>() }
+			shouldThrow<InvalidDependency> { Injekt.get<Box<*>>() }
+		}
+	}
 }) {
 
 	override fun afterTest(description: Description, result: TestResult) {
 		Injekt.clearFactories()
 	}
 }
+
+@Suppress("unused")
+open class Box<T : Any>(val name: String)
+
+class IntBox : Box<Int>("int-box")
 
 val Injekt = TestInjektor()
 
