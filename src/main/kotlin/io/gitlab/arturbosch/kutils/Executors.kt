@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.kutils
 
+import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.ThreadPoolExecutor
@@ -9,8 +10,17 @@ import java.util.concurrent.atomic.AtomicInteger
 val cores = Runtime.getRuntime().availableProcessors()
 
 /**
+ * Directly executes the given runnable task on current thread.
+ */
+class DirectExecutor : Executor {
+
+	override fun execute(command: Runnable) {
+		command.run()
+	}
+}
+
+/**
  * Allows to create a thread pool executors with customized thread factory.
- * @author Artur Bosch
  */
 fun withCustomThreadFactoryExecutor(threadFactory: ThreadFactory,
 									coreThreads: Int = cores,
