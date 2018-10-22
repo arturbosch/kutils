@@ -39,7 +39,6 @@ repositories {
 	jcenter()
 }
 
-
 detekt {
 	filters = ".*/resources/.*, .*/build/.*"
 	config = files("$projectDir/default-detekt-config.yml")
