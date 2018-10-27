@@ -39,6 +39,12 @@ repositories {
 	jcenter()
 }
 
+compileKotlin {
+	kotlinOptions {
+		freeCompilerArgs = ["-Xuse-experimental=kotlin.Experimental"]
+	}
+}
+
 detekt {
 	filters = ".*/resources/.*, .*/build/.*"
 	config = files("$projectDir/default-detekt-config.yml")
