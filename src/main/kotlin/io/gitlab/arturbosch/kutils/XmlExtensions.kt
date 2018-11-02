@@ -24,6 +24,9 @@ inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)) =
             )
         }
 
+private const val FIRST_XML_EVENT_NUMBER = 1
+private const val NUMBER_OF_XML_EVENTS = 15
+
 class XMLStreamer(
     private val reader: XMLStreamReader
 ) {
@@ -46,7 +49,7 @@ class XMLStreamer(
      * See [XMLEvent] to register to specific events.
      */
     fun onAny(eventType: Int, action: XMLStreamReader.() -> Unit) {
-        require(eventType in 1..15)
+        require(eventType in FIRST_XML_EVENT_NUMBER..NUMBER_OF_XML_EVENTS)
         anyEventsToActions.getOrPut(eventType) { ArrayList() }.add(action)
     }
 

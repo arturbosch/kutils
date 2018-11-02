@@ -46,7 +46,6 @@ compileKotlin {
 }
 
 detekt {
-	filters = ".*/resources/.*, .*/build/.*"
 	config = files("$projectDir/default-detekt-config.yml")
 	baseline = file("$projectDir/baseline.xml")
 
