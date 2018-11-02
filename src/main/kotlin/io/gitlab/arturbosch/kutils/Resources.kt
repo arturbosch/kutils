@@ -15,10 +15,10 @@ object Resources
  * May throw IllegalArgumentException if the resource does not exist.
  */
 fun resource(name: String): URI {
-	val explicitName = if (name.startsWith("/")) name else "/$name"
-	val resource = Resources::class.java.getResource(explicitName)
-	requireNotNull(resource) { "Make sure the resource '$name' exists!" }
-	return resource.toURI()
+    val explicitName = if (name.startsWith("/")) name else "/$name"
+    val resource = Resources::class.java.getResource(explicitName)
+    requireNotNull(resource) { "Make sure the resource '$name' exists!" }
+    return resource.toURI()
 }
 
 /**

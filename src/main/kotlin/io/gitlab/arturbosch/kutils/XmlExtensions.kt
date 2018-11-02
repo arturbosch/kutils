@@ -25,7 +25,7 @@ inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)) =
         }
 
 class XMLStreamer(
-        private val reader: XMLStreamReader
+    private val reader: XMLStreamReader
 ) {
 
     var result: (() -> Any)? = null
@@ -75,9 +75,9 @@ fun Writer.streamXml(): XMLStreamWriter = XMLOutputFactory.newFactory().createXM
 fun XMLStreamWriter.prettyPrinter(): XMLStreamWriter = IndentingXMLStreamWriter(this)
 
 inline fun XMLStreamWriter.document(
-        version: String? = null,
-        encoding: String? = null,
-        init: XMLStreamWriter.() -> Unit
+    version: String? = null,
+    encoding: String? = null,
+    init: XMLStreamWriter.() -> Unit
 ) = apply {
     when {
         encoding != null && version != null -> writeStartDocument(encoding, version)
@@ -89,24 +89,27 @@ inline fun XMLStreamWriter.document(
 }
 
 inline fun XMLStreamWriter.tag(
-        name: String,
-        init: XMLStreamWriter.() -> Unit) = apply {
+    name: String,
+    init: XMLStreamWriter.() -> Unit
+) = apply {
     writeStartElement(name)
     init()
     writeEndElement()
 }
 
 fun XMLStreamWriter.emptyTag(
-        name: String,
-        init: (XMLStreamWriter.() -> Unit)? = null) = apply {
+    name: String,
+    init: (XMLStreamWriter.() -> Unit)? = null
+) = apply {
     writeEmptyElement(name)
     init?.invoke(this)
 }
 
 inline fun XMLStreamWriter.tag(
-        name: String,
-        content: String,
-        init: XMLStreamWriter.() -> Unit) = apply {
+    name: String,
+    content: String,
+    init: XMLStreamWriter.() -> Unit
+) = apply {
     tag(name) {
         init()
         writeCharacters(content)
@@ -128,8 +131,8 @@ fun XMLStreamWriter.attribute(name: String, value: String) = writeAttribute(name
 abstract class DelegatingXMLStreamWriter(writer: XMLStreamWriter) : XMLStreamWriter by writer
 
 class IndentingXMLStreamWriter(
-        writer: XMLStreamWriter,
-        private val indent: String = "  "
+    writer: XMLStreamWriter,
+    private val indent: String = "  "
 ) : DelegatingXMLStreamWriter(writer) {
 
     private var currentState = NOTHING
@@ -198,48 +201,40 @@ class IndentingXMLStreamWriter(
         super.writeStartElement(namespaceURI, localName)
     }
 
-
     override fun writeStartElement(prefix: String, localName: String, namespaceURI: String) {
         onStartTag()
         super.writeStartElement(prefix, localName, namespaceURI)
     }
-
 
     override fun writeEmptyElement(namespaceURI: String, localName: String) {
         onEmptyTag()
         super.writeEmptyElement(namespaceURI, localName)
     }
 
-
     override fun writeEmptyElement(prefix: String, localName: String, namespaceURI: String) {
         onEmptyTag()
         super.writeEmptyElement(prefix, localName, namespaceURI)
     }
-
 
     override fun writeEmptyElement(localName: String) {
         onEmptyTag()
         super.writeEmptyElement(localName)
     }
 
-
     override fun writeEndElement() {
         onEndTag()
         super.writeEndElement()
     }
-
 
     override fun writeCharacters(text: String) {
         currentState = DATA
         super.writeCharacters(text)
     }
 
-
     override fun writeCharacters(text: CharArray, start: Int, len: Int) {
         currentState = DATA
         super.writeCharacters(text, start, len)
     }
-
 
     override fun writeCData(data: String) {
         currentState = DATA

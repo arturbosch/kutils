@@ -14,44 +14,44 @@ import kotlin.reflect.KClass
  * gets fired.
  */
 interface EventBus {
-	/**
+    /**
 	 * A subscriber tells the bus on which event types the given action should be called.
 	 */
-	fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit)
+    fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit)
 
-	/**
+    /**
 	 * Unsubscribe from given event type for given subscriber.
 	 */
-	fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>)
+    fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>)
 
-	/**
+    /**
 	 * Broadcast given event to all subscribers to this event type.
 	 */
-	fun <T : Any> post(event: T)
+    fun <T : Any> post(event: T)
 }
 
 inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit) =
-		subscribe(subscriber, T::class, action)
+        subscribe(subscriber, T::class, action)
 
 inline fun <reified T : Any> EventBus.unsubscribe(subscriber: Any) =
-		unsubscribe(subscriber, T::class)
+        unsubscribe(subscriber, T::class)
 
 /**
  * A subscription bundles the action to take when specific event type is triggered for a subscriber.
  */
 interface Subscription {
-	val eventType: KClass<*>
-	val owner: Any
-	val action: (Any) -> Unit
+    val eventType: KClass<*>
+    val owner: Any
+    val action: (Any) -> Unit
 }
 
 /**
  * Just a plain holder of a subscription.
  */
 open class DefaultSubscription(
-		override val eventType: KClass<*>,
-		override val owner: Any,
-		override val action: (Any) -> Unit
+    override val eventType: KClass<*>,
+    override val owner: Any,
+    override val action: (Any) -> Unit
 ) : Subscription
 
 /**
@@ -63,34 +63,34 @@ open class DefaultSubscription(
  * and the exception handler whenever an action of a subscription fails.
  */
 open class DefaultEventBus(
-		private val executor: Executor = DirectExecutor(),
-		private val handler: EventBusExceptionHandler = LoggingExceptionHandler()
+    private val executor: Executor = DirectExecutor(),
+    private val handler: EventBusExceptionHandler = LoggingExceptionHandler()
 ) : EventBus {
 
-	private val subscriptions: ConcurrentMap<KClass<*>, MutableSet<Subscription>> = ConcurrentHashMap()
+    private val subscriptions: ConcurrentMap<KClass<*>, MutableSet<Subscription>> = ConcurrentHashMap()
 
-	override fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit) {
-		val subscriptions = subscriptions.getOrPut(eventType) { mutableSetOf() }
-		subscriptions.add(DefaultSubscription(eventType, subscriber, action as (Any) -> Unit))
-	}
+    override fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit) {
+        val subscriptions = subscriptions.getOrPut(eventType) { mutableSetOf() }
+        subscriptions.add(DefaultSubscription(eventType, subscriber, action as (Any) -> Unit))
+    }
 
-	override fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>) {
-		subscriptions[eventType]?.removeAll { it.owner == subscriber }
-	}
+    override fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>) {
+        subscriptions[eventType]?.removeAll { it.owner == subscriber }
+    }
 
-	override fun <T : Any> post(event: T) {
-		executor.execute {
-			val subscriptions = subscriptions[event::class]
-					?.toList() ?: emptyList() // copy to prevent ConcurrentModificationException
-			for (subscription in subscriptions) {
-				try {
-					subscription.action.invoke(event)
-				} catch (e: Throwable) {
-					handler.handle(e, subscription)
-				}
-			}
-		}
-	}
+    override fun <T : Any> post(event: T) {
+        executor.execute {
+            val subscriptions = subscriptions[event::class]
+                    ?.toList() ?: emptyList() // copy to prevent ConcurrentModificationException
+            for (subscription in subscriptions) {
+                try {
+                    subscription.action.invoke(event)
+                } catch (e: Throwable) {
+                    handler.handle(e, subscription)
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -98,7 +98,7 @@ open class DefaultEventBus(
  * its action.
  */
 interface EventBusExceptionHandler {
-	fun handle(e: Throwable, subscription: Subscription)
+    fun handle(e: Throwable, subscription: Subscription)
 }
 
 /**
@@ -107,15 +107,15 @@ interface EventBusExceptionHandler {
  */
 class LoggingExceptionHandler : EventBusExceptionHandler {
 
-	private val log: Logger = Logger.getLogger(LoggingExceptionHandler::class.java.name)
+    private val log: Logger = Logger.getLogger(LoggingExceptionHandler::class.java.name)
 
-	override fun handle(e: Throwable, subscription: Subscription) {
-		if (log.isLoggable(Level.SEVERE)) {
-			log.log(Level.SEVERE,
-					"Unexpected error '$e' " +
-							"on subscriber '${subscription.owner}' " +
-							"when dispatching event '${subscription.eventType}'."
-			)
-		}
-	}
+    override fun handle(e: Throwable, subscription: Subscription) {
+        if (log.isLoggable(Level.SEVERE)) {
+            log.log(Level.SEVERE,
+                    "Unexpected error '$e' " +
+                            "on subscriber '${subscription.owner}' " +
+                            "when dispatching event '${subscription.eventType}'."
+            )
+        }
+    }
 }

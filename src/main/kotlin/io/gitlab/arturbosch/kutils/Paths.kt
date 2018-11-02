@@ -73,10 +73,10 @@ inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
  * Creates system file based on this path. Also creates all parent directories.
  */
 inline fun Path.createFile(): Path = this.apply {
-	parent.createDir()
-	if (this.notExists()) {
-		Files.createFile(this)
-	}
+    parent.createDir()
+    if (this.notExists()) {
+        Files.createFile(this)
+    }
 }
 
 /**
@@ -89,10 +89,10 @@ inline fun Path.createDir(): Path = Files.createDirectories(this)
  * Optionally you can exclude the base path (= this path) from the stream.
  */
 inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
-		when (excludeRoot) {
-			true -> Files.walk(this).asSequence().filter { it != this }
-			else -> Files.walk(this).asSequence()
-		}
+        when (excludeRoot) {
+            true -> Files.walk(this).asSequence().filter { it != this }
+            else -> Files.walk(this).asSequence()
+        }
 
 /**
  * Tests if this path exists, if not make it nullable.
@@ -108,4 +108,4 @@ fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
  * Appends given [content] to this file.
  */
 fun Path.append(content: String): Path =
-		Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
+        Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
