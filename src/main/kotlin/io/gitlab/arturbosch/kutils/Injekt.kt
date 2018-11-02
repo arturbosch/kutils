@@ -67,6 +67,8 @@ class InvalidDependency(type: Type) : IllegalStateException("No '$type' register
 
 inline fun <reified T : Any> Injektor.get(): T = get(typeRef<T>().type)
 
+inline fun <reified T : Any> Injektor.lazy(): Lazy<T> = lazy { get<T>() }
+
 inline fun <reified T : Any> Injektor.addSingleton(instance: T) {
 	addSingletonFactory(typeRef()) { instance }
 }

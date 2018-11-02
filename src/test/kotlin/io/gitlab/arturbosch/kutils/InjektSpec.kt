@@ -79,6 +79,23 @@ class InjektSpec : BehaviorSpec({
 			shouldThrow<InvalidDependency> { Injekt.get<Box<*>>() }
 		}
 	}
+
+	given("circular dependencies") {
+
+		Injekt.addSingletonFactory { A() }
+		Injekt.addSingletonFactory { B() }
+
+		`when`("retrieving a from b") {
+
+			val a = Injekt.get<A>()
+			val b = Injekt.get<B>()
+
+			then("it should be lazily created") {
+				a shouldBe b.a.value
+				b shouldBe a.b.value
+			}
+		}
+	}
 }) {
 
 	override fun afterTest(description: Description, result: TestResult) {
@@ -117,3 +134,6 @@ data class Logger(private val out: PrintStream = Injekt.get()) {
 		out.println(msg)
 	}
 }
+
+class A(val b: Lazy<B> = Injekt.lazy())
+class B(val a: Lazy<A> = Injekt.lazy())
