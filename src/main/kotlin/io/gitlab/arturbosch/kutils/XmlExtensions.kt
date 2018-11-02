@@ -132,43 +132,43 @@ class IndentingXMLStreamWriter(
         private val indent: String = "  "
 ) : DelegatingXMLStreamWriter(writer) {
 
-    private var state = SEEN_NOTHING
+    private var currentState = NOTHING
     private val stateStack = Stack<Any>()
 
-    private var depth = 0
+    private var indentationDepth = 0
 
-    private fun onStartElement() {
-        stateStack.push(SEEN_ELEMENT)
-        state = SEEN_NOTHING
+    private fun onStartTag() {
+        stateStack.push(TAG)
+        currentState = NOTHING
         writeNL()
         writeIndent()
-        depth++
+        indentationDepth++
     }
 
-    private fun onEndElement() {
-        depth--
-        if (state === SEEN_ELEMENT) {
+    private fun onEndTag() {
+        indentationDepth--
+        if (currentState === TAG) {
             super.writeCharacters("\n")
             writeIndent()
         }
-        state = stateStack.pop()
+        currentState = stateStack.pop()
     }
 
-    private fun onEmptyElement() {
-        state = SEEN_ELEMENT
+    private fun onEmptyTag() {
+        currentState = TAG
         writeNL()
         writeIndent()
     }
 
     private fun writeNL() {
-        if (depth > 0) {
+        if (indentationDepth > 0) {
             super.writeCharacters("\n")
         }
     }
 
     private fun writeIndent() {
-        if (depth > 0) {
-            for (i in 0 until depth)
+        if (indentationDepth > 0) {
+            for (i in 0 until indentationDepth)
                 super.writeCharacters(indent)
         }
     }
@@ -189,66 +189,66 @@ class IndentingXMLStreamWriter(
     }
 
     override fun writeStartElement(localName: String) {
-        onStartElement()
+        onStartTag()
         super.writeStartElement(localName)
     }
 
     override fun writeStartElement(namespaceURI: String, localName: String) {
-        onStartElement()
+        onStartTag()
         super.writeStartElement(namespaceURI, localName)
     }
 
 
     override fun writeStartElement(prefix: String, localName: String, namespaceURI: String) {
-        onStartElement()
+        onStartTag()
         super.writeStartElement(prefix, localName, namespaceURI)
     }
 
 
     override fun writeEmptyElement(namespaceURI: String, localName: String) {
-        onEmptyElement()
+        onEmptyTag()
         super.writeEmptyElement(namespaceURI, localName)
     }
 
 
     override fun writeEmptyElement(prefix: String, localName: String, namespaceURI: String) {
-        onEmptyElement()
+        onEmptyTag()
         super.writeEmptyElement(prefix, localName, namespaceURI)
     }
 
 
     override fun writeEmptyElement(localName: String) {
-        onEmptyElement()
+        onEmptyTag()
         super.writeEmptyElement(localName)
     }
 
 
     override fun writeEndElement() {
-        onEndElement()
+        onEndTag()
         super.writeEndElement()
     }
 
 
     override fun writeCharacters(text: String) {
-        state = SEEN_DATA
+        currentState = DATA
         super.writeCharacters(text)
     }
 
 
     override fun writeCharacters(text: CharArray, start: Int, len: Int) {
-        state = SEEN_DATA
+        currentState = DATA
         super.writeCharacters(text, start, len)
     }
 
 
     override fun writeCData(data: String) {
-        state = SEEN_DATA
+        currentState = DATA
         super.writeCData(data)
     }
 
     companion object {
-        private val SEEN_NOTHING = Any()
-        private val SEEN_ELEMENT = Any()
-        private val SEEN_DATA = Any()
+        private val NOTHING = Any()
+        private val TAG = Any()
+        private val DATA = Any()
     }
 }
