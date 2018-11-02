@@ -8,10 +8,10 @@ import kotlin.contracts.contract
 /**
  * Shorthand for null check.
  */
-@ExperimentalContracts
+@UseExperimental(ExperimentalContracts::class)
 inline fun Any?.notNull(): Boolean {
     contract {
-        returns(true) implies(this@notNull != null)
+        returns(true) implies (this@notNull != null)
     }
     return this != null
 }
@@ -19,10 +19,10 @@ inline fun Any?.notNull(): Boolean {
 /**
  * Shorthand null check for nullable booleans.
  */
-@ExperimentalContracts
+@UseExperimental(ExperimentalContracts::class)
 inline fun Boolean?.isTrue(): Boolean {
     contract {
-        returns(true) implies(this@isTrue != null)
+        returns(true) implies (this@isTrue != null)
     }
     return this != null && this
 }

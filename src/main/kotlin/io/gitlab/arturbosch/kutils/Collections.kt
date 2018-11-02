@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.kutils
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.LinkedHashMap
-import kotlin.contracts.ExperimentalContracts
 
 /**
  * Transforms the list of pairs to a map, applying a merge strategy for same keys.
@@ -102,8 +101,8 @@ inline fun <T, K, V> Collection<T>.toHashMap(keyFunction: (T) -> K, valueFunctio
 	return result
 }
 
-@ExperimentalContracts
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> T?.singleAsList(): List<T> = if (this.notNull()) listOf(this) else emptyList()
 
+@Suppress("ConvertFlatMapToFlatten")
 fun <T> mergeCollections(vararg other: Collection<T>): List<T> = other.flatMap { it }
