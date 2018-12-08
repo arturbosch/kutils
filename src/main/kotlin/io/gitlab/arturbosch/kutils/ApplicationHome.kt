@@ -14,7 +14,7 @@ interface ApplicationHome {
     val baseDir: Path
 
     fun check(path: Path, isDir: Boolean = true, shouldCreate: Boolean = true) = path.apply {
-        if (notExists()) {
+        if (notExists() && shouldCreate) {
             when {
                 isDir -> Files.createDirectories(this)
                 else -> this.createFile()
