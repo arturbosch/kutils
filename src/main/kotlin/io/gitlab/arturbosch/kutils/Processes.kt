@@ -20,6 +20,11 @@ data class ProcessStatus(val out: List<String>, val err: List<String>, val code:
         }
         return this
     }
+
+    fun getOrNull(): List<String>? = if (code == 0) out else null
+
+    fun <T : Throwable> getOrThrow(factory: () -> T): List<String> =
+            if (code == 0) out else throw factory.invoke()
 }
 
 /**
@@ -38,6 +43,7 @@ fun process(args: List<String>, directory: File = File(".")): Process {
  * are fully read.
  */
 fun Process.consume(): ProcessStatus {
+    // readLines 'uses' the stream -> closes resources
     val out = this.inputStream.bufferedReader().readLines()
     val err = this.errorStream.bufferedReader().readLines()
     val code = this.waitFor()
