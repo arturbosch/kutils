@@ -50,7 +50,7 @@ fun <E> List<E>.plusElementAtBeginning(element: E): List<E> {
 /**
  * Transforms every entry into a string by calling it's toString method.
  */
-fun <E> List<E>.applyToString(): List<String> = this.map { it.toString() }
+fun <E> Collection<E>.applyToString(): List<String> = this.map { it.toString() }
 
 /**
  * Replace one element at given index, creating a new immutable list.
@@ -68,15 +68,6 @@ inline fun <E> Collection<E>.ifNotEmpty(function: Collection<E>.() -> Unit) {
     if (this.isNotEmpty()) {
         function.invoke(this)
     }
-}
-
-/**
- * Inspects all elements and invokes given block on each element. Does not modify the collection.
- */
-inline fun <T> Collection<T>.peek(block: (T) -> Unit): Collection<T> {
-    for (element in this)
-        block.invoke(element)
-    return this
 }
 
 /**

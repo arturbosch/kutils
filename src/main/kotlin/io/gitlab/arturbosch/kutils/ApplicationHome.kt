@@ -17,10 +17,7 @@ interface ApplicationHome {
         if (notExists()) {
             when {
                 isDir -> Files.createDirectories(this)
-                else -> {
-                    Files.createDirectories(parent)
-                    Files.createFile(this)
-                }
+                else -> this.createFile()
             }
         }
     }

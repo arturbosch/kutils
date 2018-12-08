@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-val cores = Runtime.getRuntime().availableProcessors()
+val cores get() = Runtime.getRuntime().availableProcessors()
 
 /**
  * Directly executes the given runnable task on current thread.
