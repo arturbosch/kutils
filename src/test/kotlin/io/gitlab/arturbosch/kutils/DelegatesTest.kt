@@ -9,19 +9,19 @@ import io.kotlintest.specs.StringSpec
  */
 internal class DelegatesTest : StringSpec({
 
-	class A {
-		var a: String by single()
-		val logger by julLogger()
-	}
+    class A {
+        var a: String by single()
+        val logger by julLogger()
+    }
 
-	"should allow only single assignment" {
-		val a = A()
-		a.a = "hi"
-		shouldThrow<IllegalStateException> { a.a = "bye";a.a }
-	}
+    "should allow only single assignment" {
+        val a = A()
+        a.a = "hi"
+        shouldThrow<IllegalStateException> { a.a = "bye"; a.a }
+    }
 
-	"should provide a logger" {
-		val a = A()
-		a.logger shouldNotBe null
-	}
+    "should provide a logger" {
+        val a = A()
+        a.logger shouldNotBe null
+    }
 })

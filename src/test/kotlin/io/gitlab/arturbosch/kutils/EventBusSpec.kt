@@ -13,112 +13,112 @@ import kotlin.test.assertFailsWith
  */
 internal class EventBusSpec : StringSpec({
 
-	"allows to subscribe to events" {
+    "allows to subscribe to events" {
 
-		val bus = DefaultEventBus()
-		val actual = AtomicInteger()
+        val bus = DefaultEventBus()
+        val actual = AtomicInteger()
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				actual.incrementAndGet()
-				bus.unsubscribe<BroadcastEvent>(this)
-			}
-		}
+            fun run() {
+                actual.incrementAndGet()
+                bus.unsubscribe<BroadcastEvent>(this)
+            }
+        }
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				actual.incrementAndGet()
-				bus.unsubscribe<BroadcastEvent>(this)
-			}
-		}
+            fun run() {
+                actual.incrementAndGet()
+                bus.unsubscribe<BroadcastEvent>(this)
+            }
+        }
 
-		actual.get() shouldBe 0
-		bus.post(BroadcastEvent)
-		actual.get() shouldBe 2
-		bus.post(BroadcastEvent)
-		actual.get() shouldBe 2
-	}
+        actual.get() shouldBe 0
+        bus.post(BroadcastEvent)
+        actual.get() shouldBe 2
+        bus.post(BroadcastEvent)
+        actual.get() shouldBe 2
+    }
 
-	"allows to override dispatcher" {
+    "allows to override dispatcher" {
 
-		val bus = DefaultEventBus(Executors.newSingleThreadExecutor())
-		val actual = AtomicInteger()
-		val countDownLatch = CountDownLatch(2)
+        val bus = DefaultEventBus(Executors.newSingleThreadExecutor())
+        val actual = AtomicInteger()
+        val countDownLatch = CountDownLatch(2)
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				actual.incrementAndGet()
-				countDownLatch.countDown()
-			}
-		}
+            fun run() {
+                actual.incrementAndGet()
+                countDownLatch.countDown()
+            }
+        }
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				actual.incrementAndGet()
-				countDownLatch.countDown()
-			}
-		}
+            fun run() {
+                actual.incrementAndGet()
+                countDownLatch.countDown()
+            }
+        }
 
-		actual.get() shouldBe 0
-		bus.post(BroadcastEvent)
-		countDownLatch.await(1L, TimeUnit.SECONDS)
-		actual.get() shouldBe 2
-	}
+        actual.get() shouldBe 0
+        bus.post(BroadcastEvent)
+        countDownLatch.await(1L, TimeUnit.SECONDS)
+        actual.get() shouldBe 2
+    }
 
-	"logs errors on default" {
-		val bus = DefaultEventBus()
+    "logs errors on default" {
+        val bus = DefaultEventBus()
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				throw IllegalStateException("oO")
-			}
-		}
-		bus.post(BroadcastEvent)
-	}
+            fun run() {
+                throw IllegalStateException("oO")
+            }
+        }
+        bus.post(BroadcastEvent)
+    }
 
-	"allows to override exception handler" {
-		val bus = DefaultEventBus(
-				handler = object : EventBusExceptionHandler {
-					override fun handle(e: Throwable, subscription: Subscription) {
-						throw UnsupportedOperationException("not implemented")
-					}
-				}
-		)
+    "allows to override exception handler" {
+        val bus = DefaultEventBus(
+                handler = object : EventBusExceptionHandler {
+                    override fun handle(e: Throwable, subscription: Subscription) {
+                        throw UnsupportedOperationException("not implemented")
+                    }
+                }
+        )
 
-		object {
-			init {
-				bus.subscribe<BroadcastEvent>(this) { run() }
-			}
+        object {
+            init {
+                bus.subscribe<BroadcastEvent>(this) { run() }
+            }
 
-			fun run() {
-				throw IllegalStateException("oO")
-			}
-		}
+            fun run() {
+                throw IllegalStateException("oO")
+            }
+        }
 
-		assertFailsWith<UnsupportedOperationException> {
-			bus.post(BroadcastEvent)
-		}
-	}
+        assertFailsWith<UnsupportedOperationException> {
+            bus.post(BroadcastEvent)
+        }
+    }
 })
 
 object BroadcastEvent

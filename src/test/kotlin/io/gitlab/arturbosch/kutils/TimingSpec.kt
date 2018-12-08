@@ -9,10 +9,10 @@ import kotlin.test.assertTrue
  */
 class TimingSpec : StringSpec({
 
-	"it should return the time in long plus the result" {
-		val (time, result) = measureAndReturn { "Hi" }
+    "it should return the time in long plus the result" {
+        val (time, result) = measureAndReturn { "Hi" }
 
-		assertTrue(time >= 0)
-		assertEquals(result, "Hi")
-	}
+        assertTrue(time >= 0)
+        assertEquals(result, "Hi")
+    }
 })
