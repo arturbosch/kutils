@@ -3,6 +3,10 @@
 package io.gitlab.arturbosch.kutils
 
 import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStream
+import java.io.OutputStream
+import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -13,6 +17,11 @@ import kotlin.streams.asSequence
  * Converts this string to a path object.
  */
 inline fun String.asPath(): Path = Paths.get(this)
+
+/**
+ * Returns a normalized absolute path specified by given string.
+ */
+inline fun path(path: String): Path = path.asPath().toAbsolutePath().normalize()
 
 /**
  * Does this path represent a file?
@@ -42,7 +51,12 @@ inline fun Path.notExists() = Files.notExists(this)
 /**
  * Reads the file content into a string.
  */
-inline fun Path.readText() = String(Files.readAllBytes(this))
+inline fun Path.readText(charSet: Charset = Charsets.UTF_8) = String(Files.readAllBytes(this), charSet)
+
+/**
+ * Reads the file content into a byte array.
+ */
+inline fun Path.readBytes() = Files.readAllBytes(this)
 
 /**
  * Reads all lines of the file represented by this path.
@@ -62,7 +76,15 @@ inline fun Path.copy(target: Path): Path = Files.copy(this, target)
 /**
  * Shortcut to write the content of a string to a file.
  */
-inline fun Path.write(content: String): Path = Files.write(this, content.toByteArray())
+inline fun Path.write(
+		content: String,
+		charSet: Charset = Charsets.UTF_8
+): Path = Files.write(this, content.toByteArray(charSet))
+
+/**
+ * Shortcut to write the bytes to a file.
+ */
+inline fun Path.write(content: ByteArray): Path = Files.write(this, content)
 
 /**
  * Opens a buffered reader from this path.
@@ -73,10 +95,10 @@ inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
  * Creates system file based on this path. Also creates all parent directories.
  */
 inline fun Path.createFile(): Path = this.apply {
-    parent.createDir()
-    if (this.notExists()) {
-        Files.createFile(this)
-    }
+	parent.createDir()
+	if (this.notExists()) {
+		Files.createFile(this)
+	}
 }
 
 /**
@@ -89,23 +111,60 @@ inline fun Path.createDir(): Path = Files.createDirectories(this)
  * Optionally you can exclude the base path (= this path) from the stream.
  */
 inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
-        when (excludeRoot) {
-            true -> Files.walk(this).asSequence().filter { it != this }
-            else -> Files.walk(this).asSequence()
-        }
+		when (excludeRoot) {
+			true -> Files.walk(this).asSequence().filter { it != this }
+			else -> Files.walk(this).asSequence()
+		}
 
 /**
  * Tests if this path exists, if not make it nullable.
  */
-fun Path.ifExists(): Path? = if (Files.exists(this)) this else null
+inline fun Path.ifExists(): Path? = if (Files.exists(this)) this else null
 
 /**
  * Tests if this path does not exist to make it nullable
  */
-fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
+inline fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
 
 /**
  * Appends given [content] to this file.
  */
-fun Path.append(content: String): Path =
-        Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
+inline fun Path.append(content: String): Path =
+		Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
+
+/**
+ * Returns just the fileName without extension. E.g. 'foo.bar.txt' will return 'foo'.
+ */
+inline fun Path.nameWithoutExtension(): String = this.name().substringBefore(".")
+
+/**
+ * Returns just the fileName as string.
+ */
+inline fun Path.name(): String = this.fileName.toString()
+
+/**
+ * Returns the extension of a path. E.g. 'foo.bar.txt' will return 'bar.txt'.
+ */
+inline fun Path.extension(): String = this.fileName.toString().substringAfter(".")
+
+/**
+ * Lists paths in current folder or throws unchecked exception if not a directory.
+ */
+inline fun Path.list(): Sequence<Path> = Files.list(this).asSequence()
+
+/**
+ * Opens this path as an input stream. Needs to be closed.
+ */
+inline fun Path.inputStream(): InputStream = Files.newInputStream(this)
+
+/**
+ * Opens this path as an output stream. Needs to be closed.
+ */
+inline fun Path.outputStream(): OutputStream = Files.newOutputStream(this)
+
+/**
+ * Opens this path as an output stream. Needs to be closed.
+ */
+inline fun Path.writer(
+		charSet: Charset = Charsets.UTF_8
+): BufferedWriter = Files.newBufferedWriter(this, charSet)
