@@ -23,8 +23,8 @@ data class ProcessStatus(val out: List<String>, val err: List<String>, val code:
 
     fun getOrNull(): List<String>? = if (code == 0) out else null
 
-    fun <T : Throwable> getOrThrow(factory: () -> T): List<String> =
-            if (code == 0) out else throw factory.invoke()
+    fun <T : Throwable> getOrThrow(factory: (List<String>) -> T): List<String> =
+            if (code == 0) out else throw factory.invoke(err)
 }
 
 /**
