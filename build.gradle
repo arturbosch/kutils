@@ -46,6 +46,7 @@ compileKotlin {
 }
 
 detekt {
+	config = files("$projectDir/detekt/config.yml")
 	baseline = file("$projectDir/baseline.xml")
 
 	reports {
