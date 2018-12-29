@@ -77,8 +77,8 @@ inline fun Path.copy(target: Path): Path = Files.copy(this, target)
  * Shortcut to write the content of a string to a file.
  */
 inline fun Path.write(
-		content: String,
-		charSet: Charset = Charsets.UTF_8
+    content: String,
+    charSet: Charset = Charsets.UTF_8
 ): Path = Files.write(this, content.toByteArray(charSet))
 
 /**
@@ -95,10 +95,10 @@ inline fun Path.open(): BufferedReader = Files.newBufferedReader(this)
  * Creates system file based on this path. Also creates all parent directories.
  */
 inline fun Path.createFile(): Path = this.apply {
-	parent.createDir()
-	if (this.notExists()) {
-		Files.createFile(this)
-	}
+    parent.createDir()
+    if (this.notExists()) {
+        Files.createFile(this)
+    }
 }
 
 /**
@@ -111,10 +111,10 @@ inline fun Path.createDir(): Path = Files.createDirectories(this)
  * Optionally you can exclude the base path (= this path) from the stream.
  */
 inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
-		when (excludeRoot) {
-			true -> Files.walk(this).asSequence().filter { it != this }
-			else -> Files.walk(this).asSequence()
-		}
+        when (excludeRoot) {
+            true -> Files.walk(this).asSequence().filter { it != this }
+            else -> Files.walk(this).asSequence()
+        }
 
 /**
  * Tests if this path exists, if not make it nullable.
@@ -130,7 +130,7 @@ inline fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
  * Appends given [content] to this file.
  */
 inline fun Path.append(content: String): Path =
-		Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
+        Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
 
 /**
  * Returns just the fileName without extension. E.g. 'foo.bar.txt' will return 'foo'.
@@ -166,5 +166,5 @@ inline fun Path.outputStream(): OutputStream = Files.newOutputStream(this)
  * Opens this path as an output stream. Needs to be closed.
  */
 inline fun Path.writer(
-		charSet: Charset = Charsets.UTF_8
+    charSet: Charset = Charsets.UTF_8
 ): BufferedWriter = Files.newBufferedWriter(this, charSet)

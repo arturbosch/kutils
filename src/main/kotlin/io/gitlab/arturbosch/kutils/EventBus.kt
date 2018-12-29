@@ -15,18 +15,18 @@ import kotlin.reflect.KClass
  */
 interface EventBus {
     /**
-	 * A subscriber tells the bus on which event types the given action should be called.
-	 */
+     * A subscriber tells the bus on which event types the given action should be called.
+     */
     fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit)
 
     /**
-	 * Unsubscribe from given event type for given subscriber.
-	 */
+     * Unsubscribe from given event type for given subscriber.
+     */
     fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>)
 
     /**
-	 * Broadcast given event to all subscribers to this event type.
-	 */
+     * Broadcast given event to all subscribers to this event type.
+     */
     fun <T : Any> post(event: T)
 }
 
