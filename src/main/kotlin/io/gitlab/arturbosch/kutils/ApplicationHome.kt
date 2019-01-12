@@ -33,9 +33,13 @@ interface ApplicationHome {
  * Convenience implementation of an ApplicationHome with properties support.
  */
 abstract class ApplicationHomeFolder(
-    override val baseDir: Path,
+    final override val baseDir: Path,
     protected val properties: MutableMap<String, String> = HashMap()
 ) : ApplicationHome, PropertiesAware {
+
+    init {
+        baseDir.createDir()
+    }
 
     override fun property(key: String): String? = properties[key]
     override fun propertyOrDefault(key: String, defaultValue: String): String = property(key) ?: defaultValue
@@ -49,7 +53,7 @@ abstract class ApplicationHomeFolder(
     }
 
     fun addPropertiesFromFile(propertyFile: Path) {
-        check(propertyFile.exists())
+        check(propertyFile.exists()) { "File '$propertyFile' for property loading does not exist." }
         propertyFile.open().useLines { lines ->
             for (line in lines) {
                 val trimmed = line.trim()
