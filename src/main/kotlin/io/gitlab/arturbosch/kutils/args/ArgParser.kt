@@ -65,15 +65,40 @@ open class ArgParser(val name: String, val desc: String) {
         return if (option == null) null else getValue(option, default)
     }
 
-    fun addStringOption(longForm: String, isRequired: Boolean, shortForm: Char? = null, help: String? = null): ArgParser = addOption(StringOption(longForm, isRequired, shortForm, help))
+    fun addStringOption(
+        longForm: String,
+        isRequired: Boolean = false,
+        shortForm: Char? = null,
+        help: String? = null
+    ): ArgParser = addOption(StringOption(longForm, isRequired, shortForm, help))
 
-    fun addIntOption(longForm: String, isRequired: Boolean, shortForm: Char? = null, help: String? = null): ArgParser = addOption(IntegerOption(longForm, isRequired, shortForm, help))
+    fun addIntOption(
+        longForm: String,
+        isRequired: Boolean = false,
+        shortForm: Char? = null,
+        help: String? = null
+    ): ArgParser = addOption(IntegerOption(longForm, isRequired, shortForm, help))
 
-    fun addLongOption(longForm: String, isRequired: Boolean, shortForm: Char? = null, help: String? = null): ArgParser = addOption(LongOption(longForm, isRequired, shortForm, help))
+    fun addLongOption(
+        longForm: String,
+        isRequired: Boolean = false,
+        shortForm: Char? = null,
+        help: String? = null
+    ): ArgParser = addOption(LongOption(longForm, isRequired, shortForm, help))
 
-    fun addDoubleOption(longForm: String, isRequired: Boolean, shortForm: Char? = null, help: String? = null): ArgParser = addOption(DoubleOption(longForm, isRequired, shortForm, help))
+    fun addDoubleOption(
+        longForm: String,
+        isRequired: Boolean = false,
+        shortForm: Char? = null,
+        help: String? = null
+    ): ArgParser = addOption(DoubleOption(longForm, isRequired, shortForm, help))
 
-    fun addBoolOption(longForm: String, isRequired: Boolean, shortForm: Char? = null, help: String? = null): ArgParser = addOption(BooleanOption(longForm, isRequired, shortForm, help))
+    fun addBoolOption(
+        longForm: String,
+        isRequired: Boolean = false,
+        shortForm: Char? = null,
+        help: String? = null
+    ): ArgParser = addOption(BooleanOption(longForm, isRequired, shortForm, help))
 
     fun stringValue(longForm: String, default: String? = null): String? = getValue(longForm, default)
 
