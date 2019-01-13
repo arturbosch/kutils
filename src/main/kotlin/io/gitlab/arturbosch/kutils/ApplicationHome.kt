@@ -55,12 +55,10 @@ abstract class ApplicationHomeFolder(
     fun addPropertiesFromFile(propertyFile: Path) {
         check(propertyFile.exists()) { "File '$propertyFile' for property loading does not exist." }
         propertyFile.open().useLines { lines ->
-            for (line in lines) {
-                val trimmed = line.trim()
-                check(trimmed.contains("=")) { "key=value expected but found $trimmed" }
-                val (key, value) = trimmed.substringBefore("=") to trimmed.substringAfter("=")
-                properties[key] = value
-            }
+            lines.map { it.trim() }
+                    .filterNot { it.startsWith("#") } // comments starting with '#' are allowed
+                    .onEach { check(it.contains("=")) { "key=value expected but found $it" } }
+                    .forEach { properties[it.substringBefore("=")] = it.substringAfter("=") }
         }
     }
 
