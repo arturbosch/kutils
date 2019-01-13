@@ -1,8 +1,11 @@
 package io.gitlab.arturbosch.kutils
 
+import java.io.Reader
+import java.io.StringReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.HashMap
+import java.util.Properties
 
 /**
  * An ApplicationHome represents the home directory of your application.
@@ -54,20 +57,19 @@ abstract class ApplicationHomeFolder(
 
     fun addPropertiesFromFile(propertyFile: Path) {
         check(propertyFile.exists()) { "File '$propertyFile' for property loading does not exist." }
-        propertyFile.open().useLines { lines ->
-            lines.map { it.trim() }
-                    .filterNot { it.startsWith("#") } // comments starting with '#' are allowed
-                    .onEach { check(it.contains("=")) { "key=value expected but found $it" } }
-                    .forEach { properties[it.substringBefore("=")] = it.substringAfter("=") }
-        }
+        propertyFile.open().use { addPropertiesFromReader(it) }
     }
 
-    fun addPropertiesFromCommaSeparatedString(props: String) {
-        props.splitToSequence(',')
-                .map(String::trim)
-                .map { it.split('=') }
-                .onEach { check(it.size == 2) { "key=value expected but found ${it.joinToString()}" } }
-                .forEach { properties[it[0]] = it[1] }
+    fun addPropertiesFromSeparatedString(props: String, separator: Char = ',') {
+        val content = props.replace(separator, '\n')
+        StringReader(content).use { addPropertiesFromReader(it) }
+    }
+
+    fun addPropertiesFromReader(reader: Reader) {
+        Properties().apply {
+            load(reader)
+            forEach { properties[it.key.toString()] = it.value.toString() }
+        }
     }
 }
 
