@@ -26,10 +26,10 @@ interface ApplicationHome {
     }
 
     fun resolveFile(additional: String, shouldCreate: Boolean = true): Path =
-            check(baseDir.resolve(additional), isDir = false)
+            check(baseDir.resolve(additional), isDir = false, shouldCreate = shouldCreate)
 
     fun resolveDir(additional: String, shouldCreate: Boolean = true): Path =
-            check(baseDir.resolve(additional))
+            check(baseDir.resolve(additional), isDir = true, shouldCreate = shouldCreate)
 }
 
 /**
