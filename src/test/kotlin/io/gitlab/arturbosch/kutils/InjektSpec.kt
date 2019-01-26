@@ -82,17 +82,30 @@ class InjektSpec : BehaviorSpec({
 
     given("circular dependencies") {
 
-        Injekt.addSingletonFactory { A() }
-        Injekt.addSingletonFactory { B() }
+        `when`("retrieving a from b eagerly") {
 
-        `when`("retrieving a from b") {
+            Injekt.addSingletonFactory { EagerA() }
+            Injekt.addSingletonFactory { EagerB() }
 
-            val a = Injekt.get<A>()
-            val b = Injekt.get<B>()
+            then("a circular dependency is detected") {
+                val error = shouldThrow<CircularDependency> {
+                    Injekt.get<EagerA>()
+                }
+                println(error)
+            }
+        }
+
+        `when`("retrieving a from b lazily") {
+
+            Injekt.addSingletonFactory { LazyA() }
+            Injekt.addSingletonFactory { LazyB() }
+
+            val a = Injekt.get<LazyA>()
+            val b = Injekt.get<LazyB>()
 
             then("it should be lazily created") {
-                a shouldBe b.a.value
-                b shouldBe a.b.value
+                a shouldBe b.a
+                b shouldBe a.b
             }
         }
     }
@@ -135,5 +148,13 @@ data class Logger(private val out: PrintStream = Injekt.get()) {
     }
 }
 
-class A(val b: Lazy<B> = Injekt.lazy())
-class B(val a: Lazy<A> = Injekt.lazy())
+class EagerA(@Suppress("unused") val b: EagerB = Injekt.get())
+class EagerB(@Suppress("unused") val a: EagerA = Injekt.get())
+
+class LazyA {
+    val b: LazyB by Injekt.lazy()
+}
+
+class LazyB {
+    val a: LazyA by Injekt.lazy()
+}

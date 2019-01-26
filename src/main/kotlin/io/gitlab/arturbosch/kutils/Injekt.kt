@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 interface Injektor {
 
-    @Throws(InvalidDependency::class)
+    @Throws(InvalidDependency::class, CircularDependency::class)
     fun <T : Any> get(type: Type): T
 
     fun <T : Any> addFactory(typeReference: TypeReference<T>, factory: () -> T)
@@ -28,7 +28,8 @@ open class DefaultInjektor : Injektor {
 
     override fun <T : Any> get(type: Type): T {
         val factory = factories[type] ?: throw InvalidDependency(type)
-        return factory.produce() as T
+        return kotlin.runCatching { factory.produce() as T }
+                .getOrElse { throw (if (it is StackOverflowError) CircularDependency(type) else it) }
     }
 
     override fun <T : Any> addFactory(typeReference: TypeReference<T>, factory: () -> T) {
@@ -56,11 +57,6 @@ sealed class Factory<T : Any>(private val producer: () -> T) {
         override fun produce(): T = producer.invoke()
     }
 }
-
-/**
- * Is thrown when the [Injektor] does not have a type registered.
- */
-class InvalidDependency(type: Type) : IllegalStateException("No '$type' registered.")
 
 /* Kotlin convenience functions. */
 
@@ -102,3 +98,17 @@ abstract class FullTypeReference<T> protected constructor() : TypeReference<T> {
         typeArguments[0]
     }
 }
+
+// Errors
+
+/**
+ * Is thrown when the [Injektor] does not have a type registered.
+ */
+open class InvalidDependency(type: Type) : IllegalStateException("No '$type' registered.")
+
+/**
+ * Is thrown when the [Injektor] can't resolve a dependency due to circular usages.
+ */
+@Suppress("NO_REFLECTION_IN_CLASS_PATH")
+open class CircularDependency(clazz: Type)
+    : RuntimeException("Circular dependencies detected when resolving ${clazz.typeName}")
