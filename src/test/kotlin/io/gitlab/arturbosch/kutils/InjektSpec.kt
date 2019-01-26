@@ -109,6 +109,18 @@ class InjektSpec : BehaviorSpec({
             }
         }
     }
+
+    given("lazy injection with initialize function") {
+        Injekt.addSingletonFactory { Counter() }
+        Injekt.addSingletonFactory { LazyWithInitBox() }
+
+        `when`("retrieving obj with a lazy-with-init dependency") {
+            val counter = Injekt.get<LazyWithInitBox>().counter
+            then("the counter of obj is 1 not 0") {
+                counter.number.get() shouldBe 1
+            }
+        }
+    }
 }) {
 
     override fun afterTest(description: Description, result: TestResult) {
@@ -157,4 +169,8 @@ class LazyA {
 
 class LazyB {
     val a: LazyA by Injekt.lazy()
+}
+
+class LazyWithInitBox {
+    val counter: Counter by Injekt.lazy { it.inc() }
 }

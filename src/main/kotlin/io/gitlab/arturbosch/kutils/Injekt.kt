@@ -62,7 +62,10 @@ sealed class Factory<T : Any>(private val producer: () -> T) {
 
 inline fun <reified T : Any> Injektor.get(): T = get(typeRef<T>().type)
 
-inline fun <reified T : Any> Injektor.lazy(): Lazy<T> = lazy { get<T>() }
+inline fun <reified T : Any> Injektor.lazy(): Lazy<T> = kotlin.lazy { get<T>() }
+
+inline fun <reified T : Any> Injektor.lazy(crossinline init: (T) -> Unit): Lazy<T> =
+        kotlin.lazy { get<T>().also(init) }
 
 inline fun <reified T : Any> Injektor.addSingleton(instance: T) {
     addSingletonFactory(typeRef()) { instance }
