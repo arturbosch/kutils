@@ -26,8 +26,16 @@ interface EventBus {
 
     /**
      * Broadcast given event to all subscribers to this event type.
+     * ATTENTION: The event continues on the same Thread.
      */
     fun <T : Any> post(event: T)
+
+    /**
+     * Broadcast given event to all subscribers to this event type in an asynchronous way.
+     * ATTENTION: It can be implementation/usage specific if this is really asynchronous.
+     */
+    fun <T : Any> postAsync(event: T)
+
 }
 
 inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit) =
@@ -81,17 +89,24 @@ open class DefaultEventBus(
     }
 
     override fun <T : Any> post(event: T) {
-        executor.execute {
-            val subscriptions = subscriptions[event::class]
-                    ?.toList() ?: emptyList() // copy to prevent ConcurrentModificationException
-            for (subscription in subscriptions) {
-                try {
-                    subscription.action.invoke(event)
-                } catch (e: Throwable) {
-                    handler.handle(e, subscription)
-                }
+        internalPost(event)
+    }
+
+    private fun <T : Any> internalPost(event: T) {
+        val subscriptions = subscriptions[event::class]
+                ?.toList() // copy to prevent ConcurrentModificationException
+            ?: return
+        for (subscription in subscriptions) {
+            try {
+                subscription.action.invoke(event)
+            } catch (e: Throwable) {
+                handler.handle(e, subscription)
             }
         }
+    }
+
+    override fun <T : Any> postAsync(event: T) {
+        executor.execute { internalPost(event) }
     }
 }
 
