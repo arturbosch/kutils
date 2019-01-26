@@ -17,12 +17,12 @@ interface EventBus {
     /**
      * A subscriber tells the bus on which event types the given action should be called.
      */
-    fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit)
+    fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit): EventBus
 
     /**
      * Unsubscribe from given event type for given subscriber.
      */
-    fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>)
+    fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>): EventBus
 
     /**
      * Broadcast given event to all subscribers to this event type.
@@ -69,13 +69,15 @@ open class DefaultEventBus(
 
     private val subscriptions: ConcurrentMap<KClass<*>, MutableSet<Subscription>> = ConcurrentHashMap()
 
-    override fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit) {
+    override fun <T : Any> subscribe(subscriber: Any, eventType: KClass<T>, action: (T) -> Unit): EventBus {
         val subscriptions = subscriptions.getOrPut(eventType) { mutableSetOf() }
         subscriptions.add(DefaultSubscription(eventType, subscriber, action as (Any) -> Unit))
+        return this
     }
 
-    override fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>) {
+    override fun <T : Any> unsubscribe(subscriber: Any, eventType: KClass<T>): EventBus {
         subscriptions[eventType]?.removeAll { it.owner == subscriber }
+        return this
     }
 
     override fun <T : Any> post(event: T) {
