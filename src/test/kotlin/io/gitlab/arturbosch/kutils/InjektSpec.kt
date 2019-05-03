@@ -1,6 +1,8 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package io.gitlab.arturbosch.kutils
 
-import io.kotlintest.Description
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -49,7 +51,7 @@ class InjektSpec : BehaviorSpec({
         `when`("using different types of a generic class") {
 
             Injekt.addSingleton(Box<Int>("box-of-int"))
-            Injekt.addSingleton(IntBox())
+            val withIntBox = Injekt.withSingleton(IntBox())
             Injekt.addSingleton(Box<String>("box-of-string"))
             Injekt.addSingleton(Box<List<Int>>("box-of-list-of-int"))
             Injekt.addSingleton(Box<List<String>>("box-of-list-of-string"))
@@ -65,6 +67,7 @@ class InjektSpec : BehaviorSpec({
                 val mapBox: Box<Map<String, List<Set<Int>>>> = Injekt.get()
                 intBox.name shouldBe "box-of-int"
                 intBox2.name shouldBe "int-box"
+                intBox2 shouldBe withIntBox
                 stringBox.name shouldBe "box-of-string"
                 listIntBox.name shouldBe "box-of-list-of-int"
                 listStringBox.name shouldBe "box-of-list-of-string"
@@ -123,7 +126,7 @@ class InjektSpec : BehaviorSpec({
     }
 }) {
 
-    override fun afterTest(description: Description, result: TestResult) {
+    override fun afterTest(testCase: TestCase, result: TestResult) {
         Injekt.clearFactories()
     }
 }

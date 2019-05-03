@@ -28,8 +28,8 @@ open class DefaultInjektor : Injektor {
 
     override fun <T : Any> get(type: Type): T {
         val factory = factories[type] ?: throw InvalidDependency(type)
-        return kotlin.runCatching { factory.produce() as T }
-                .getOrElse { throw (if (it is StackOverflowError) CircularDependency(type) else it) }
+        return runCatching { factory.produce() as T }
+            .getOrElse { throw (if (it is StackOverflowError) CircularDependency(type) else it) }
     }
 
     override fun <T : Any> addFactory(typeReference: TypeReference<T>, factory: () -> T) {
@@ -65,10 +65,15 @@ inline fun <reified T : Any> Injektor.get(): T = get(typeRef<T>().type)
 inline fun <reified T : Any> Injektor.lazy(): Lazy<T> = kotlin.lazy { get<T>() }
 
 inline fun <reified T : Any> Injektor.lazy(crossinline init: (T) -> Unit): Lazy<T> =
-        kotlin.lazy { get<T>().also(init) }
+    kotlin.lazy { get<T>().also(init) }
 
 inline fun <reified T : Any> Injektor.addSingleton(instance: T) {
     addSingletonFactory(typeRef()) { instance }
+}
+
+inline fun <reified T : Any> Injektor.withSingleton(instance: T): T {
+    addSingleton(instance)
+    return instance
 }
 
 inline fun <reified T : Any> Injektor.addSingletonFactory(noinline instance: () -> T) {
