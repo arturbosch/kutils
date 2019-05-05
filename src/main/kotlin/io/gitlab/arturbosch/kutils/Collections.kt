@@ -8,9 +8,9 @@ import java.util.LinkedHashMap
  * Transforms the list of pairs to a map, applying a merge strategy for same keys.
  */
 fun <K, V> List<Pair<K, List<V>>>.toMergedMap(): Map<K, List<V>> {
-    val map = HashMap<K, MutableList<V>>()
-    this.forEach {
-        map.merge(it.first, it.second.toMutableList()) { l1, l2 -> l1.apply { addAll(l2) } }
+    val map = HashMap<K, MutableList<V>>(this.size)
+    for ((key, value) in this) {
+        map.merge(key, value.toMutableList()) { l1, l2 -> l1.apply { addAll(l2) } }
     }
     return map
 }
@@ -74,7 +74,7 @@ inline fun <E> Collection<E>.ifNotEmpty(function: Collection<E>.() -> Unit) {
  * Transforms the collection into a LinkedHashMap by using key and value functions.
  */
 inline fun <T, K, V> Collection<T>.toMap(keyFunction: (T) -> K, valueFunction: (T) -> V): Map<K, V> {
-    val result = LinkedHashMap<K, V>()
+    val result = LinkedHashMap<K, V>(this.size)
     for (element in this) {
         result[keyFunction(element)] = valueFunction(element)
     }
@@ -85,7 +85,7 @@ inline fun <T, K, V> Collection<T>.toMap(keyFunction: (T) -> K, valueFunction: (
  * Transforms the collection into a HashMap by using key and value functions.
  */
 inline fun <T, K, V> Collection<T>.toHashMap(keyFunction: (T) -> K, valueFunction: (T) -> V): HashMap<K, V> {
-    val result = HashMap<K, V>()
+    val result = HashMap<K, V>(this.size)
     for (element in this) {
         result[keyFunction(element)] = valueFunction(element)
     }
