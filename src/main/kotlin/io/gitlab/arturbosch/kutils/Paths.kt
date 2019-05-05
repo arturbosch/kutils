@@ -122,10 +122,13 @@ inline fun Path.createDir(): Path = Files.createDirectories(this)
  * Streams over all paths inside this path.
  * Optionally you can exclude the base path (= this path) from the stream.
  */
-inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
+inline fun Path.stream(
+    excludeRoot: Boolean = false,
+    maxDepth: Int = Int.MAX_VALUE
+): Sequence<Path> =
     when (excludeRoot) {
-        true -> Files.walk(this).asSequence().filter { it != this }
-        else -> Files.walk(this).asSequence()
+        true -> Files.walk(this, maxDepth).asSequence().filter { it != this }
+        else -> Files.walk(this, maxDepth).asSequence()
     }
 
 /**
