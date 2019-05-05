@@ -2,7 +2,6 @@ package io.gitlab.arturbosch.kutils
 
 import java.io.Reader
 import java.io.StringReader
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.HashMap
 import java.util.Properties
@@ -19,17 +18,17 @@ interface ApplicationHome {
     fun check(path: Path, isDir: Boolean = true, shouldCreate: Boolean = true) = path.apply {
         if (notExists() && shouldCreate) {
             when {
-                isDir -> Files.createDirectories(this)
+                isDir -> this.createDir()
                 else -> this.createFile()
             }
         }
     }
 
     fun resolveFile(additional: String, shouldCreate: Boolean = true): Path =
-            check(baseDir.resolve(additional), isDir = false, shouldCreate = shouldCreate)
+        check(baseDir.resolve(additional), isDir = false, shouldCreate = shouldCreate)
 
     fun resolveDir(additional: String, shouldCreate: Boolean = true): Path =
-            check(baseDir.resolve(additional), isDir = true, shouldCreate = shouldCreate)
+        check(baseDir.resolve(additional), isDir = true, shouldCreate = shouldCreate)
 }
 
 /**

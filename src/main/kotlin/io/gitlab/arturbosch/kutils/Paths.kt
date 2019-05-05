@@ -4,6 +4,7 @@ package io.gitlab.arturbosch.kutils
 
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
@@ -19,9 +20,20 @@ import kotlin.streams.asSequence
 inline fun String.asPath(): Path = Paths.get(this)
 
 /**
+ * Converts this string to a path object.
+ */
+inline fun String.asHomeAwarePath(): Path = Paths.get(
+    if (startsWith("~" + File.separator)) {
+        replaceFirst("~", System.getProperty("user.home"))
+    } else {
+        this
+    }
+)
+
+/**
  * Returns a normalized absolute path specified by given string.
  */
-inline fun path(path: String): Path = path.asPath().toAbsolutePath().normalize()
+inline fun path(path: String): Path = path.asHomeAwarePath().toAbsolutePath().normalize()
 
 /**
  * Does this path represent a file?
@@ -111,10 +123,10 @@ inline fun Path.createDir(): Path = Files.createDirectories(this)
  * Optionally you can exclude the base path (= this path) from the stream.
  */
 inline fun Path.stream(excludeRoot: Boolean = false): Sequence<Path> =
-        when (excludeRoot) {
-            true -> Files.walk(this).asSequence().filter { it != this }
-            else -> Files.walk(this).asSequence()
-        }
+    when (excludeRoot) {
+        true -> Files.walk(this).asSequence().filter { it != this }
+        else -> Files.walk(this).asSequence()
+    }
 
 /**
  * Tests if this path exists, if not make it nullable.
@@ -130,7 +142,7 @@ inline fun Path.ifNotExists(): Path? = if (Files.notExists(this)) this else null
  * Appends given [content] to this file.
  */
 inline fun Path.append(content: String): Path =
-        Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
+    Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
 
 /**
  * Returns just the fileName without extension. E.g. 'foo.bar.txt' will return 'foo'.
