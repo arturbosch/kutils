@@ -10,8 +10,8 @@ import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
- * An EventBus allows to subscribe to events and subscribers notified whenever given event type
- * gets fired.
+ * An EventBus allows to subscribe to events.
+ * Subscribers notified whenever given event type gets fired.
  */
 interface EventBus {
     /**
