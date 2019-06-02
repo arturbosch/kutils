@@ -21,14 +21,19 @@ inline fun <T> useExecutor(
 /**
  * Starts given block in a completable future with this executor.
  */
-inline fun <T> Executor.runAsync(crossinline block: () -> T) = task(this) { block() }
+inline fun <T> Executor.runAsync(crossinline block: () -> T) = task(this, block)
 
 /**
  * Starts given task as a completable future. If no executor is specialized, the common
  * thread pool is used for this.
  */
 inline fun <T> task(executor: Executor = ForkJoinPool.commonPool(), crossinline task: () -> T): CompletableFuture<T> =
-        CompletableFuture.supplyAsync(Supplier { task() }, executor)
+    CompletableFuture.supplyAsync(Supplier { task() }, executor)
+
+/**
+ * Shortcut to start an async task with receiver executor.
+ */
+operator fun <T> Executor.invoke(task: () -> T): CompletableFuture<T> = task(this, task)
 
 /**
  * Awaits the execution of all given completable futures. Returns the results of the futures.
