@@ -6,6 +6,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import java.io.InputStream
 import java.net.URI
+import java.net.URL
 
 /**
  * @author Artur Bosch
@@ -13,7 +14,11 @@ import java.net.URI
 internal class ResourcesSpec : StringSpec({
 
     "can load resource as URI" {
-        resource("test") should beInstanceOf<URI>()
+        resourceAsUri("test") should beInstanceOf<URI>()
+    }
+
+    "can load resource as URL" {
+        resource("test") should beInstanceOf<URL>()
     }
 
     "can load resource as stream" {
@@ -23,6 +28,6 @@ internal class ResourcesSpec : StringSpec({
     }
 
     "can load resource into string" {
-        resourceAsString("test").trim() shouldBe "test"
+        resourceAsText("test").trim() shouldBe "test"
     }
 })
