@@ -14,9 +14,9 @@ import kotlin.concurrent.thread
 /**
  * @author Artur Bosch
  */
-class InjektSpec : BehaviorSpec({
+class ContainerSpec : BehaviorSpec({
 
-    given("default injektor with some classes") {
+    given("default container with some classes") {
 
         Injekt.addSingleton<PrintStream>(System.out)
         Injekt.addFactory { Logger() }
@@ -136,9 +136,9 @@ open class Box<T : Any>(val name: String)
 
 class IntBox : Box<Int>("int-box")
 
-val Injekt = TestInjektor()
+val Injekt = TestContainer()
 
-open class TestInjektor : DefaultInjektor() {
+open class TestContainer : DefaultContainer() {
     fun clearFactories(): Unit = factories.clear()
 }
 

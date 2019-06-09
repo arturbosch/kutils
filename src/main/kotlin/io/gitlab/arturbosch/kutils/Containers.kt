@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Defines minimal logic for dependency injection.
  */
-interface Injektor {
+interface Container {
 
     @Throws(InvalidDependency::class, CircularDependency::class)
     fun <T : Any> get(type: Type): T
@@ -19,10 +19,10 @@ interface Injektor {
 }
 
 /**
- * Default implementation of the [Injektor] interface.
+ * Default implementation of the [Container] interface.
  * Uses a concurrent hash map to store factories which are used to create instances.
  */
-open class DefaultInjektor : Injektor {
+open class DefaultContainer : Container {
 
     protected val factories = ConcurrentHashMap<Type, Factory<*>>()
 
@@ -60,27 +60,27 @@ sealed class Factory<T : Any>(private val producer: () -> T) {
 
 /* Kotlin convenience functions. */
 
-inline fun <reified T : Any> Injektor.get(): T = get(typeRef<T>().type)
+inline fun <reified T : Any> Container.get(): T = get(typeRef<T>().type)
 
-inline fun <reified T : Any> Injektor.lazy(): Lazy<T> = kotlin.lazy { get<T>() }
+inline fun <reified T : Any> Container.lazy(): Lazy<T> = kotlin.lazy { get<T>() }
 
-inline fun <reified T : Any> Injektor.lazy(crossinline init: (T) -> Unit): Lazy<T> =
+inline fun <reified T : Any> Container.lazy(crossinline init: (T) -> Unit): Lazy<T> =
     kotlin.lazy { get<T>().also(init) }
 
-inline fun <reified T : Any> Injektor.addSingleton(instance: T) {
+inline fun <reified T : Any> Container.addSingleton(instance: T) {
     addSingletonFactory(typeRef()) { instance }
 }
 
-inline fun <reified T : Any> Injektor.withSingleton(instance: T): T {
+inline fun <reified T : Any> Container.withSingleton(instance: T): T {
     addSingleton(instance)
     return instance
 }
 
-inline fun <reified T : Any> Injektor.addSingletonFactory(noinline instance: () -> T) {
+inline fun <reified T : Any> Container.addSingletonFactory(noinline instance: () -> T) {
     addSingletonFactory(typeRef(), instance)
 }
 
-inline fun <reified T : Any> Injektor.addFactory(noinline instance: () -> T) {
+inline fun <reified T : Any> Container.addFactory(noinline instance: () -> T) {
     addFactory(typeRef(), instance)
 }
 
@@ -110,13 +110,19 @@ abstract class FullTypeReference<T> protected constructor() : TypeReference<T> {
 // Errors
 
 /**
- * Is thrown when the [Injektor] does not have a type registered.
+ * Is thrown when the [Container] does not have a type registered.
  */
 open class InvalidDependency(type: Type) : IllegalStateException("No '$type' registered.")
 
 /**
- * Is thrown when the [Injektor] can't resolve a dependency due to circular usages.
+ * Is thrown when the [Container] can't resolve a dependency due to circular usages.
  */
 @Suppress("NO_REFLECTION_IN_CLASS_PATH")
 open class CircularDependency(clazz: Type)
     : RuntimeException("Circular dependencies detected when resolving ${clazz.typeName}")
+
+// Provider
+
+interface Provider<T> : WithPriority {
+    fun provide(container: Container): T
+}
