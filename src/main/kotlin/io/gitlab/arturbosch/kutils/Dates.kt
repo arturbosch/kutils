@@ -17,3 +17,7 @@ fun Date.toLocalDate(): LocalDate = this.toInstant().atZone(ZoneId.systemDefault
 fun Date.toLocalDateTime(): LocalDateTime = this.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 
 fun Date.toZonedDateTime(): ZonedDateTime = this.toInstant().atZone(ZoneId.systemDefault())
+
+fun LocalDate.startOfWeek(): LocalDate = minusDays(dayOfWeek.value - 1L)
+
+fun LocalDate.startOfMonth(): LocalDate = minusDays(dayOfMonth - 1L)
