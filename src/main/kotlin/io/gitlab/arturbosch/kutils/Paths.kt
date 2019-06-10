@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import java.util.stream.Stream
 import kotlin.streams.asSequence
 
 /**
@@ -78,7 +79,15 @@ inline fun Path.readLines(): MutableList<String> = Files.readAllLines(this)
 /**
  * Streams all lines of the file represented by this path.
  */
-inline fun Path.streamLines(): Sequence<String> = Files.lines(this).asSequence()
+inline fun Path.streamLines(): Stream<String> = Files.lines(this)
+
+/**
+ * Reads all lines of the file represented by this path.
+ */
+inline fun <T> Path.useLines(
+    charSet: Charset = Charsets.UTF_8,
+    block: (Sequence<String>) -> T
+): T = toFile().useLines(charset = charSet, block = block)
 
 /**
  * Copies content of this path to target path.
@@ -119,17 +128,41 @@ inline fun Path.createFile(): Path = this.apply {
 inline fun Path.createDir(): Path = Files.createDirectories(this)
 
 /**
- * Streams over all paths inside this path.
+ * Streams over the given path..
  * Optionally you can exclude the base path (= this path) from the stream.
+ * Cannot be reused due to Stream nature.
  */
 inline fun Path.stream(
     excludeRoot: Boolean = false,
     maxDepth: Int = Int.MAX_VALUE
-): Sequence<Path> =
+): Stream<Path> =
     when (excludeRoot) {
-        true -> Files.walk(this, maxDepth).asSequence().filter { it != this }
-        else -> Files.walk(this, maxDepth).asSequence()
+        true -> Files.walk(this, maxDepth).filter { it != this }
+        else -> Files.walk(this, maxDepth)
     }
+
+/**
+ * Same as [stream] but returns a [Sequence].
+ * The function name warns you that this sequence can only be consumed once.
+ */
+inline fun Path.streamOnce(
+    excludeRoot: Boolean = false,
+    maxDepth: Int = Int.MAX_VALUE
+): Sequence<Path> = stream(excludeRoot, maxDepth).asSequence()
+
+/**
+ * Walks through the given path. Sequence can be reused.
+ */
+fun Path.walk(
+    excludeRoot: Boolean = false,
+    direction: FileWalkDirection = FileWalkDirection.TOP_DOWN
+): Sequence<Path> {
+    val root = toFile()
+    return when (excludeRoot) {
+        true -> root.walk(direction).filter { it != root }.map { it.toPath() }
+        else -> root.walk(direction).map { it.toPath() }
+    }
+}
 
 /**
  * Tests if this path exists, if not make it nullable.
@@ -163,9 +196,9 @@ inline fun Path.name(): String = this.fileName.toString()
 inline fun Path.extension(): String = this.fileName.toString().substringAfter(".")
 
 /**
- * Lists paths in current folder or throws unchecked exception if not a directory.
+ * Lists paths in current folder or returns an empty sequence if not a directory.
  */
-inline fun Path.list(): Sequence<Path> = Files.list(this).asSequence()
+inline fun Path.list(): Sequence<Path> = toFile().list()?.asSequence()?.map { it.asPath() } ?: emptySequence()
 
 /**
  * Opens this path as an input stream. Needs to be closed.
