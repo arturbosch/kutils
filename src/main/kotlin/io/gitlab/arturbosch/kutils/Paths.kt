@@ -181,6 +181,12 @@ inline fun Path.append(content: String): Path =
     Files.write(this, content.toByteArray(), StandardOpenOption.APPEND)
 
 /**
+ * Appends given [content] to this file together with a new line or custom suffix.
+ */
+inline fun Path.appendln(content: String, sep: String = System.lineSeparator()): Path =
+    Files.write(this, (content + sep).toByteArray(), StandardOpenOption.APPEND)
+
+/**
  * Returns just the fileName without extension. E.g. 'foo.bar.txt' will return 'foo'.
  */
 inline fun Path.nameWithoutExtension(): String = this.name().substringBefore(".")
