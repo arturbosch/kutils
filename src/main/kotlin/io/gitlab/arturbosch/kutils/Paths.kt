@@ -21,7 +21,7 @@ import kotlin.streams.asSequence
 inline fun String.asPath(): Path = Paths.get(this)
 
 /**
- * Converts this string to a path object.
+ * Converts this string to a path object considering leading '~'.
  */
 inline fun String.asHomeAwarePath(): Path = Paths.get(
     if (startsWith("~" + File.separator)) {
@@ -34,7 +34,16 @@ inline fun String.asHomeAwarePath(): Path = Paths.get(
 /**
  * Returns a normalized absolute path specified by given string.
  */
+@Deprecated(
+    "Use the factory function 'Path' instead.",
+    ReplaceWith("Path", "io.gitlab.arturbosch.kutils.Path")
+)
 inline fun path(path: String): Path = path.asHomeAwarePath().toAbsolutePath().normalize()
+
+/**
+ * Returns a normalized absolute path specified by given string.
+ */
+inline fun Path(path: String): Path = path.asHomeAwarePath().toAbsolutePath().normalize()
 
 /**
  * Does this path represent a file?
