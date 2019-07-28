@@ -3,7 +3,10 @@ package io.gitlab.arturbosch.kutils.args
 import java.util.LinkedList
 
 @Suppress("UNCHECKED_CAST")
-open class ArgParser(val name: String, val desc: String) {
+open class ArgParser(
+    private val name: String,
+    private val desc: String
+) {
 
     companion object {
         fun create(name: String, desc: String, init: ArgParser.() -> Unit) =
@@ -56,7 +59,7 @@ open class ArgParser(val name: String, val desc: String) {
     }
 
     private fun <T> getValue(shortName: Char, default: T? = null): T? {
-        val option = options["-" + shortName.toString()] as? Option<T>
+        val option = options["-$shortName"] as? Option<T>
         return if (option == null) null else getValue(option, default)
     }
 

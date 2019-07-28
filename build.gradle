@@ -52,14 +52,13 @@ compileTestKotlin {
 }
 
 detekt {
+    failFast = true
+    buildUponDefaultConfig = true
     config = files("$projectDir/detekt/config.yml")
-    baseline = file("$projectDir/baseline.xml")
+    baseline = file("$projectDir/detekt/baseline.xml")
 
     reports {
-        html {
-            enabled = true
-            destination = file("$rootDir/detekt.html")
-        }
+        html.enabled = true
     }
 }
 
