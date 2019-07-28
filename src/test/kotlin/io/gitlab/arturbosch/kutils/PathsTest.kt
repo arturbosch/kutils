@@ -6,7 +6,7 @@ import io.kotlintest.specs.StringSpec
 internal class PathsTest : StringSpec({
 
     "can parse tilde (~)" {
-        val path = path("~/Files")
+        val path = Path("~/Files")
         path.toString() shouldNotContain "~"
     }
 })

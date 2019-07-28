@@ -36,7 +36,7 @@ inline fun String.asHomeAwarePath(): Path = Paths.get(
  */
 @Deprecated(
     "Use the factory function 'Path' instead.",
-    ReplaceWith("Path", "io.gitlab.arturbosch.kutils.Path")
+    ReplaceWith("Path(path)", "io.gitlab.arturbosch.kutils.Path")
 )
 inline fun path(path: String): Path = path.asHomeAwarePath().toAbsolutePath().normalize()
 
