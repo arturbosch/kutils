@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 
 /**
  * An EventBus allows to subscribe to events.
- * Subscribers notified whenever given event type gets fired.
+ * Subscribers are notified whenever given event type gets fired.
  */
 interface EventBus {
     /**
