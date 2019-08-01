@@ -99,6 +99,22 @@ inline fun <T> Path.useLines(
 ): T = toFile().useLines(charset = charSet, block = block)
 
 /**
+ * Reads all non blank lines of the file represented by this path.
+ */
+inline fun <T> Path.useNormalizedLines(
+    vararg prefixesToFilter: String,
+    charSet: Charset = Charsets.UTF_8,
+    block: (Sequence<String>) -> T
+): T = toFile().useLines(charset = charSet) { lines ->
+    val prefixFilteredLines = if (prefixesToFilter.isNullOrEmpty()) {
+        lines
+    } else {
+        lines.filterNot { line -> prefixesToFilter.any { prefix -> line.startsWith(prefix) } }
+    }
+    block(prefixFilteredLines.filter { it.isNotBlank() })
+}
+
+/**
  * Copies content of this path to target path.
  */
 inline fun Path.copy(target: Path): Path = Files.copy(this, target)
