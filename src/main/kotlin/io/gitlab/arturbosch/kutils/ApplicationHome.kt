@@ -70,9 +70,20 @@ abstract class ApplicationHomeFolder(
             forEach { properties[it.key.toString()] = it.value.toString() }
         }
     }
+
+    internal fun internalProperties() = properties
 }
 
 interface PropertiesAware {
     fun property(key: String): String?
     fun propertyOrDefault(key: String, defaultValue: String): String
+}
+
+abstract class ReloadableConfig(
+    private val wrapped: ApplicationHomeFolder
+) : ApplicationHome by wrapped, PropertiesAware by wrapped {
+
+    val readOnlyProperties get() = wrapped.internalProperties().toMap()
+    protected fun clearProperties() = wrapped.internalProperties().clear()
+    abstract fun reload()
 }
