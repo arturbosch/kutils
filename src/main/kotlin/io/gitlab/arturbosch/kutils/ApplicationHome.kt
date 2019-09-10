@@ -36,11 +36,15 @@ interface ApplicationHome {
  */
 abstract class ApplicationHomeFolder(
     final override val baseDir: Path,
-    protected val properties: MutableMap<String, String> = HashMap()
+    protected val properties: MutableMap<String, String> = HashMap(),
+    onFirstStart: () -> Unit = {}
 ) : ApplicationHome, PropertiesAware {
 
     init {
-        baseDir.createDir()
+        if (baseDir.notExists()) {
+            baseDir.createDir()
+            onFirstStart()
+        }
     }
 
     override fun property(key: String): String? = properties[key]
