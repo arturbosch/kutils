@@ -229,7 +229,7 @@ inline fun Path.extension(): String = this.fileName.toString().substringAfter(".
 /**
  * Lists paths in current folder or returns an empty sequence if not a directory.
  */
-inline fun Path.list(): Sequence<Path> = toFile().list()?.asSequence()?.map { it.asPath() } ?: emptySequence()
+inline fun Path.list(): Sequence<Path> = toFile().list()?.asSequence()?.map { this.resolve(it) } ?: emptySequence()
 
 /**
  * Opens this path as an input stream. Needs to be closed.
