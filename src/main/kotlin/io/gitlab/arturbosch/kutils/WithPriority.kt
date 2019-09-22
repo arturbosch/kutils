@@ -2,5 +2,7 @@ package io.gitlab.arturbosch.kutils
 
 interface WithPriority {
 
-    val priority: Int get() = 0
+    @JvmDefault
+    val priority: Int
+        get() = 0
 }

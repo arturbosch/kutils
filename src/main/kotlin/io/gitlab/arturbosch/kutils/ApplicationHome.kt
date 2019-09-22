@@ -15,6 +15,7 @@ interface ApplicationHome {
 
     val baseDir: Path
 
+    @JvmDefault
     fun check(path: Path, isDir: Boolean = true, shouldCreate: Boolean = true) = path.apply {
         if (notExists() && shouldCreate) {
             when {
@@ -24,9 +25,11 @@ interface ApplicationHome {
         }
     }
 
+    @JvmDefault
     fun resolveFile(additional: String, shouldCreate: Boolean = true): Path =
         check(baseDir.resolve(additional), isDir = false, shouldCreate = shouldCreate)
 
+    @JvmDefault
     fun resolveDir(additional: String, shouldCreate: Boolean = true): Path =
         check(baseDir.resolve(additional), isDir = true, shouldCreate = shouldCreate)
 }

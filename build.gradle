@@ -40,15 +40,13 @@ repositories {
     maven { url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local") }
 }
 
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xuse-experimental=kotlin.Experimental"]
-        jvmTarget = "1.8"
+[compileKotlin, compileTestKotlin].each { task ->
+    task.configure {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xuse-experimental=kotlin.Experimental", "-Xjvm-default=enable"]
+            jvmTarget = "1.8"
+        }
     }
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 detekt {
