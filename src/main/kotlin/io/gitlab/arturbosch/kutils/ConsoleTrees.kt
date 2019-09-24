@@ -66,7 +66,7 @@ object DefaultConsoleTreeConverters {
 
         override fun children(node: Path): List<Path> {
             if (node.isDirectory()) {
-                return node.list().toList()
+                return node.list().sortedBy { it.fileName.toString() }.toList()
             }
             return emptyList()
         }
