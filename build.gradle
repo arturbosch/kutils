@@ -71,6 +71,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
     testCompile "io.kotlintest:kotlintest-runner-junit5:$kotlintestVersion"
     testCompile "org.slf4j:slf4j-nop:$slf4jVersion"
+    testCompile "org.apache.commons:commons-text:$commonsTextVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitEngineVersion"
 }
 

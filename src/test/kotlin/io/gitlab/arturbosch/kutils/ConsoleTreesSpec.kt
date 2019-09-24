@@ -1,7 +1,8 @@
 package io.gitlab.arturbosch.kutils
 
-import io.kotlintest.shouldBe
+import io.kotlintest.matchers.numerics.shouldBeLessThan
 import io.kotlintest.specs.StringSpec
+import org.apache.commons.text.similarity.LevenshteinDistance
 
 class ConsoleTreesSpec : StringSpec({
 
@@ -14,7 +15,7 @@ class ConsoleTreesSpec : StringSpec({
         actual.trimIndent().split(System.lineSeparator())
             .zip(expected.trimIndent().split(System.lineSeparator()))
             .map { it.first.trim() to it.second.trim() }
-            .forEach { it.first shouldBe it.second }
+            .forEach { LevenshteinDistance.getDefaultInstance().apply(it.first, it.second) shouldBeLessThan 3 }
     }
 
     "simple testcase" {
