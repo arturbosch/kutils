@@ -11,3 +11,10 @@ inline fun <T> Sequence<T>.mapIf(
     crossinline function: (T) -> T
 ): Sequence<T> = if (condition(this)) this.map { function(it) } else this
 
+/**
+ * Consumes the whole sequence and does not return anything.
+ * Can be helpful when iterating over the sequence is important for side effects but not for the result.
+ */
+internal fun <T> Sequence<T>.consume() {
+    this.toList()
+}
