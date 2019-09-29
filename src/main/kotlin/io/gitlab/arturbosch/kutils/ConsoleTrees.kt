@@ -8,6 +8,11 @@ interface ConsoleTreeNode {
     val children: List<ConsoleTreeNode>
 }
 
+class SimpleStringNode(
+    override val label: String,
+    override val children: List<SimpleStringNode>
+) : ConsoleTreeNode
+
 interface ConsoleTreeConverter<T> {
 
     fun label(node: T): String
@@ -21,7 +26,6 @@ fun toTreeString(startNode: ConsoleTreeNode): String = toTreeString(
         override fun children(node: ConsoleTreeNode): List<ConsoleTreeNode> = node.children
     }
 )
-
 
 fun <T> toTreeString(startNode: T, converter: ConsoleTreeConverter<T>): String {
     val result = StringBuilder()
