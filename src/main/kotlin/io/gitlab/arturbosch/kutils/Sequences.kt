@@ -18,3 +18,13 @@ inline fun <T> Sequence<T>.mapIf(
 internal fun <T> Sequence<T>.consume() {
     this.toList()
 }
+
+fun Sequence<String>.applyFilters(prefixesToFilter: Array<out String>): Sequence<String> =
+    transformIf(prefixesToFilter.isNotEmpty()) {
+        it.filterNot { line -> prefixesToFilter.any { prefix -> line.startsWith(prefix) } }
+    }
+
+fun Sequence<String>.toPropertiesMap(separator: String = "="): Map<String, String> =
+    map { it.split(separator) }
+        .filter { it.size == 2 }
+        .associate { it[0] to it[1] }

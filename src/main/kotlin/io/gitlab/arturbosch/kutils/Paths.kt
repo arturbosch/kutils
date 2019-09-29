@@ -104,15 +104,16 @@ inline fun <T> Path.useLines(
 inline fun <T> Path.useNormalizedLines(
     vararg prefixesToFilter: String,
     charSet: Charset = Charsets.UTF_8,
+    noinline block: (Sequence<String>) -> T
+): T = useLines(charSet) { block(it.applyFilters(prefixesToFilter)) }
+
+/**
+ * Reads all non blank lines of the given input stream.
+ */
+inline fun <T> InputStream.useNormalizedLines(
+    vararg prefixesToFilter: String,
     block: (Sequence<String>) -> T
-): T = toFile().useLines(charset = charSet) { lines ->
-    val prefixFilteredLines = if (prefixesToFilter.isNullOrEmpty()) {
-        lines
-    } else {
-        lines.filterNot { line -> prefixesToFilter.any { prefix -> line.startsWith(prefix) } }
-    }
-    block(prefixFilteredLines.filter { it.isNotBlank() })
-}
+) = this.bufferedReader().useLines { block(it.applyFilters(prefixesToFilter)) }
 
 /**
  * Copies content of this path to target path.
