@@ -223,9 +223,9 @@ inline fun Path.nameWithoutExtension(): String = this.name().substringBefore("."
 inline fun Path.name(): String = this.fileName.toString()
 
 /**
- * Returns the extension of a path. E.g. 'foo.bar.txt' will return 'bar.txt'.
+ * Returns the extension of a path. E.g. 'foo.bar.txt' will return 'txt'.
  */
-inline fun Path.extension(): String = this.fileName.toString().substringAfter(".")
+inline fun Path.extension(): String = this.fileName.toString().substringAfterLast(".", "")
 
 /**
  * Lists paths in current folder or returns an empty sequence if not a directory.
