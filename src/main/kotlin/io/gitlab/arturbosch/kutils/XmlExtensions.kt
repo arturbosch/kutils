@@ -1,3 +1,5 @@
+@file:Suppress("detekt.TooManyFunctions")
+
 package io.gitlab.arturbosch.kutils
 
 import java.io.Reader
@@ -16,13 +18,13 @@ import javax.xml.stream.events.XMLEvent
  *  - retrieving the tag content consumes the [XMLEvent.END_ELEMENT] event.
  */
 inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)) =
-        XMLStreamer(XMLInputFactory.newFactory().createXMLStreamReader(this)).run {
-            init()
-            stream()
-            result?.invoke() as? T ?: throw IllegalStateException(
-                    "'${T::class}' expected to return. Make sure to end streaming with an 'onFinish()' call."
-            )
-        }
+    XMLStreamer(XMLInputFactory.newFactory().createXMLStreamReader(this)).run {
+        init()
+        stream()
+        result?.invoke() as? T ?: throw IllegalStateException(
+            "'${T::class}' expected to return. Make sure to end streaming with an 'onFinish()' call."
+        )
+    }
 
 private const val FIRST_XML_EVENT_NUMBER = 1
 private const val NUMBER_OF_XML_EVENTS = 15
@@ -64,9 +66,9 @@ class XMLStreamer(
                 val eventType = next()
                 anyEventsToActions[eventType]?.forEach { it.invoke(this) }
                 tagsToActions[eventType]
-                        ?.asSequence()
-                        ?.filter { it.tagName == localName }
-                        ?.forEach { it.action.invoke(this) }
+                    ?.asSequence()
+                    ?.filter { it.tagName == localName }
+                    ?.forEach { it.action.invoke(this) }
             }
             check(eventType == XMLEvent.END_DOCUMENT)
         }

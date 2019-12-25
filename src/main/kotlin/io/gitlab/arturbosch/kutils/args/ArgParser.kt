@@ -2,7 +2,7 @@ package io.gitlab.arturbosch.kutils.args
 
 import java.util.LinkedList
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "detekt.TooManyFunctions")
 open class ArgParser(
     private val name: String,
     private val desc: String
@@ -10,7 +10,7 @@ open class ArgParser(
 
     companion object {
         fun create(name: String, desc: String, init: ArgParser.() -> Unit) =
-                ArgParser(name, desc).apply(init)
+            ArgParser(name, desc).apply(init)
     }
 
     private val options = HashMap<String, Option<*>>(10)
@@ -124,10 +124,10 @@ open class ArgParser(
     fun boolValue(shortForm: Char, default: Boolean? = null): Boolean? = getValue(shortForm, default)
 
     @Throws(UnknownOptionException::class,
-            IllegalOptionValueException::class,
-            UnknownSubOptionException::class,
-            NotFlagException::class,
-            RequiredOptionException::class)
+        IllegalOptionValueException::class,
+        UnknownSubOptionException::class,
+        NotFlagException::class,
+        RequiredOptionException::class)
     fun parse(args: Array<String>) {
         var position = 0
         values = HashMap(10)
@@ -159,7 +159,7 @@ open class ArgParser(
     }
 
     private fun splitOnEquals(line: String, next: String?) =
-            line.substringBefore("=") to line.substringAfter("=", next ?: "")
+        line.substringBefore("=") to line.substringAfter("=", next ?: "")
 
     protected open fun handleLongOption(line: String, next: String?) {
         handleOption(line, next)
@@ -189,8 +189,8 @@ open class ArgParser(
                 var format: String
 
                 format =
-                        if (option.shortForm == null) "--" + option.longForm + ""
-                        else "{--" + option.longForm + ", -" + option.shortForm + "}"
+                    if (option.shortForm == null) "--" + option.longForm + ""
+                    else "{--" + option.longForm + ", -" + option.shortForm + "}"
 
                 if (option.withValue) format += "=value" + counter++
 
@@ -212,7 +212,7 @@ open class ArgParser(
 
     open fun getHelp(): String {
         return getUsage() + "\n" +
-                getDescription() + "\n" +
-                getOptionsDescription()
+            getDescription() + "\n" +
+            getOptionsDescription()
     }
 }

@@ -2,23 +2,12 @@
 <SmellBaseline>
   <Blacklist></Blacklist>
   <Whitelist>
-    <ID>ComplexMethod:ArgParser.kt$ArgParser$@Throws(UnknownOptionException::class, IllegalOptionValueException::class, UnknownSubOptionException::class, NotFlagException::class, RequiredOptionException::class) fun parse(args: Array&lt;String&gt;)</ID>
-    <ID>FunctionNaming:Paths.kt$ inline fun Path(path: String): Path</ID>
     <ID>MagicNumber:ArgParser.kt$ArgParser$10</ID>
     <ID>MagicNumber:Options.kt$Option$4</ID>
-    <ID>MatchingDeclarationName:Processes.kt$io.gitlab.arturbosch.kutils.Processes.kt</ID>
-    <ID>MultiLineIfElse:</ID>
-    <ID>NoBlankLineBeforeRbrace:</ID>
-    <ID>NoConsecutiveBlankLines:</ID>
-    <ID>NoTrailingSpaces:</ID>
-    <ID>SpacingAroundColon:</ID>
-    <ID>SpacingAroundCurly:</ID>
     <ID>SpreadOperator:Async.kt$(*futures)</ID>
     <ID>SpreadOperator:Async.kt$(*futures.toTypedArray())</ID>
     <ID>TooGenericExceptionCaught:EventBus.kt$DefaultEventBus$e: Throwable</ID>
-    <ID>TooManyFunctions:ArgParser.kt$ArgParser</ID>
     <ID>TooManyFunctions:Collections.kt$io.gitlab.arturbosch.kutils.Collections.kt</ID>
     <ID>TooManyFunctions:Dates.kt$io.gitlab.arturbosch.kutils.Dates.kt</ID>
-    <ID>TooManyFunctions:XmlExtensions.kt$IndentingXMLStreamWriter : DelegatingXMLStreamWriter</ID>
   </Whitelist>
 </SmellBaseline>

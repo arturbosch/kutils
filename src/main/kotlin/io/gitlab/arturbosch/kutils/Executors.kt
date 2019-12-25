@@ -27,17 +27,17 @@ fun withCustomThreadFactoryExecutor(
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
 ) = ThreadPoolExecutor(coreThreads, maxThreads,
-        0L, TimeUnit.MILLISECONDS,
-        LinkedBlockingQueue<Runnable>(),
-        threadFactory,
-        ThreadPoolExecutor.AbortPolicy())
+    0L, TimeUnit.MILLISECONDS,
+    LinkedBlockingQueue<Runnable>(),
+    threadFactory,
+    ThreadPoolExecutor.AbortPolicy())
 
 fun withNamedThreadPoolExecutor(
     name: String,
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
 ) = withCustomThreadFactoryExecutor(
-        PrefixedThreadFactory(name), coreThreads, maxThreads)
+    PrefixedThreadFactory(name), coreThreads, maxThreads)
 
 open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory {
     private val group: ThreadGroup
@@ -46,23 +46,25 @@ open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory
 
     init {
         val s = System.getSecurityManager()
-        group = if (s != null)
-            s.threadGroup
-        else
-            Thread.currentThread().threadGroup
+        group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
         val pool = poolNumber.andIncrement
         name = namePrefix + (if (pool == 1) "" else "-$pool") + "-worker-"
     }
 
     override fun newThread(r: Runnable): Thread {
-        val t = Thread(group, r,
-                namePrefix + threadNumber.andIncrement,
-                0)
-        if (t.isDaemon)
-            t.isDaemon = false
-        if (t.priority != Thread.NORM_PRIORITY)
-            t.priority = Thread.NORM_PRIORITY
-        return t
+        val thread = Thread(
+            group,
+            r,
+            namePrefix + threadNumber.andIncrement,
+            0
+        )
+        if (thread.isDaemon) {
+            thread.isDaemon = false
+        }
+        if (thread.priority != Thread.NORM_PRIORITY) {
+            thread.priority = Thread.NORM_PRIORITY
+        }
+        return thread
     }
 
     companion object {

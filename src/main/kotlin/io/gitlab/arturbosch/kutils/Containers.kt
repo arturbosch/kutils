@@ -118,8 +118,8 @@ open class InvalidDependency(type: Type) : IllegalStateException("No '$type' reg
  * Is thrown when the [Container] can't resolve a dependency due to circular usages.
  */
 @Suppress("NO_REFLECTION_IN_CLASS_PATH")
-open class CircularDependency(clazz: Type)
-    : RuntimeException("Circular dependencies detected when resolving ${clazz.typeName}")
+open class CircularDependency(clazz: Type) :
+    RuntimeException("Circular dependencies detected when resolving ${clazz.typeName}")
 
 // Provider
 

@@ -61,7 +61,6 @@ fun <T> toTreeString(startNode: T, converter: ConsoleTreeConverter<T>): String {
     return result.toString()
 }
 
-@Suppress("FunctionName")
 object DefaultConsoleTreeConverters {
     fun PathConverter() = object : ConsoleTreeConverter<Path> {
         override fun label(node: Path): String {

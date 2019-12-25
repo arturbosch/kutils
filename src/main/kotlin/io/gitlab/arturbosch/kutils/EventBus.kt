@@ -35,7 +35,6 @@ interface EventBus {
      * ATTENTION: It can be implementation/usage specific if this is really asynchronous.
      */
     fun <T : Any> postAsync(event: T)
-
 }
 
 inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit) =

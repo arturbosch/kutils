@@ -2,3 +2,8 @@ style:
   MaxLineLength:
     active: true
     maxLineLength: 120
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '^([a-zA-Z$][a-zA-Z$0-9]*)|(`.*`)$'

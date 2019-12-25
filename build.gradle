@@ -30,18 +30,19 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
 detekt {
     failFast = true
     buildUponDefaultConfig = true
+    autoCorrect = true
     config = files("$projectDir/detekt/config.yml")
     baseline = file("$projectDir/detekt/baseline.xml")
 
     reports {
-        html.enabled = true
+        txt.enabled = true
+        html.enabled = false
+        xml.enabled = false
     }
 }
 
 dependencies {
     detekt "io.gitlab.arturbosch.detekt:detekt-cli:$detektVersion"
-    detekt "io.gitlab.arturbosch.detekt:detekt-core:$detektVersion"
-    detekt "io.gitlab.arturbosch.detekt:detekt-api:$detektVersion"
     detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

@@ -8,7 +8,6 @@ open class Args(parser: ArgParser) {
     val help: Boolean by parser.get("help", false)
 }
 
-
 inline fun <reified T : Any> ArgParser.getOrNull(longForm: String, default: T? = null): ReadOnlyProperty<Args, T?> {
     val value: Any? = getValue(longForm, default)
     return object : ReadOnlyProperty<Args, T?> {
@@ -32,4 +31,3 @@ inline fun <reified T : Any> ArgParser.get(longForm: String, default: T? = null)
         override fun getValue(thisRef: Args, property: KProperty<*>): T = value as T
     }
 }
-
