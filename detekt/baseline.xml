@@ -4,6 +4,7 @@
   <Whitelist>
     <ID>MagicNumber:ArgParser.kt$ArgParser$10</ID>
     <ID>MagicNumber:Options.kt$Option$4</ID>
+    <ID>MemberNameEqualsClassName:DelegatesTest.kt$DelegatesTest.A$var a: String by single()</ID>
     <ID>SpreadOperator:Async.kt$(*futures)</ID>
     <ID>SpreadOperator:Async.kt$(*futures.toTypedArray())</ID>
     <ID>TooGenericExceptionCaught:EventBus.kt$DefaultEventBus$e: Throwable</ID>

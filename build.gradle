@@ -41,6 +41,21 @@ detekt {
     }
 }
 
+task detektProjectBaseline(type: io.gitlab.arturbosch.detekt.DetektCreateBaselineTask) {
+    description = "Overrides current baseline."
+    ignoreFailures.set(true)
+    parallel.set(true)
+    buildUponDefaultConfig.set(true)
+    setSource(files(
+            "$rootDir/src/main",
+            "$rootDir/src/test"
+    ))
+    config.setFrom(files("$rootDir/detekt/config.yml"))
+    baseline.set(file("$rootDir/detekt/baseline.xml"))
+    include("**/*.kt")
+    include("**/*.kts")
+}
+
 dependencies {
     detekt "io.gitlab.arturbosch.detekt:detekt-cli:$detektVersion"
     detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion"
