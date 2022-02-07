@@ -6,8 +6,8 @@ class NotFlagException(
     options: String,
     option: Option<*>
 ) : UnknownOptionException(
-        options,
-        "Illegal option: -" + option.shortForm + " requires a value in '" + options + "'"
+    options,
+    "Illegal option: -" + option.shortForm + " requires a value in '" + options + "'"
 )
 
 class IllegalOptionValueException(
@@ -30,6 +30,6 @@ class UnknownSubOptionException(
     options: String,
     subOption: Char
 ) : UnknownOptionException(
-        options,
-        "Unknown option: '$subOption' in '$options'"
+    options,
+    "Unknown option: '$subOption' in '$options'"
 )

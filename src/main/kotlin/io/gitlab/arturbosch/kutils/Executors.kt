@@ -26,18 +26,21 @@ fun withCustomThreadFactoryExecutor(
     threadFactory: ThreadFactory,
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
-) = ThreadPoolExecutor(coreThreads, maxThreads,
+) = ThreadPoolExecutor(
+    coreThreads, maxThreads,
     0L, TimeUnit.MILLISECONDS,
     LinkedBlockingQueue<Runnable>(),
     threadFactory,
-    ThreadPoolExecutor.AbortPolicy())
+    ThreadPoolExecutor.AbortPolicy()
+)
 
 fun withNamedThreadPoolExecutor(
     name: String,
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
 ) = withCustomThreadFactoryExecutor(
-    PrefixedThreadFactory(name), coreThreads, maxThreads)
+    PrefixedThreadFactory(name), coreThreads, maxThreads
+)
 
 open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory {
     private val group: ThreadGroup

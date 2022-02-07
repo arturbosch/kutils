@@ -18,7 +18,7 @@ fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toSet<T>())
  * Collect entries of stream into a collection providing by the factory.
  */
 fun <T, C : MutableCollection<T>> Stream<T>.into(factory: () -> C): C =
-        collect(Collectors.toCollection { factory.invoke() })
+    collect(Collectors.toCollection { factory.invoke() })
 
 /**
  * Converts this array to a java stream.

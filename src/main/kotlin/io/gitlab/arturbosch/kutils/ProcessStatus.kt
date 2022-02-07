@@ -24,7 +24,7 @@ data class ProcessStatus(val out: List<String>, val err: List<String>, val code:
     fun getOrNull(): List<String>? = if (code == 0) out else null
 
     fun <T : Throwable> getOrThrow(factory: (List<String>) -> T): List<String> =
-            if (code == 0) out else throw factory.invoke(err)
+        if (code == 0) out else throw factory.invoke(err)
 }
 
 /**
@@ -33,9 +33,9 @@ data class ProcessStatus(val out: List<String>, val err: List<String>, val code:
 fun process(args: List<String>, directory: File = File(".")): Process {
     check(directory.exists()) { "'$directory' must exist." }
     return ProcessBuilder()
-            .command(args)
-            .directory(directory)
-            .start()
+        .command(args)
+        .directory(directory)
+        .start()
 }
 
 /**

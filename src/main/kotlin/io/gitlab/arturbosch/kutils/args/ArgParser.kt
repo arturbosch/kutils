@@ -123,11 +123,13 @@ open class ArgParser(
 
     fun boolValue(shortForm: Char, default: Boolean? = null): Boolean? = getValue(shortForm, default)
 
-    @Throws(UnknownOptionException::class,
+    @Throws(
+        UnknownOptionException::class,
         IllegalOptionValueException::class,
         UnknownSubOptionException::class,
         NotFlagException::class,
-        RequiredOptionException::class)
+        RequiredOptionException::class
+    )
     fun parse(args: Array<String>) {
         var position = 0
         values = HashMap(10)

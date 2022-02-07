@@ -2,7 +2,6 @@
 
 [![build status](https://travis-ci.org/arturbosch/kutils.svg?branch=master)](https://travis-ci.org/arturbosch/kutils)
 [![CodeFactor](https://www.codefactor.io/repository/github/arturbosch/kutils/badge)](https://www.codefactor.io/repository/github/arturbosch/kutils)
-[![Download](https://api.bintray.com/packages/arturbosch/generic/kutils/images/download.svg) ](https://bintray.com/arturbosch/generic/kutils/_latestVersion) 
 
 ## Helpers
 

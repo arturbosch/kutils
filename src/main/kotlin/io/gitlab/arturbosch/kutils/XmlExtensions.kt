@@ -176,8 +176,9 @@ class IndentingXMLStreamWriter(
 
     private fun writeIndent() {
         if (indentationDepth > 0) {
-            for (i in 0 until indentationDepth)
+            repeat(indentationDepth) {
                 super.writeCharacters(indent)
+            }
         }
     }
 

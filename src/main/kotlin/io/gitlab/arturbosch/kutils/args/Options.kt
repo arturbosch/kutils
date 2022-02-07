@@ -31,17 +31,17 @@ abstract class Option<T> private constructor(
         shortForm: Char? = null,
         helpDesc: String? = null
     ) :
-            this(longForm, withValue, isRequired, shortForm?.toString(), helpDesc)
+        this(longForm, withValue, isRequired, shortForm?.toString(), helpDesc)
 
     fun getHelp(): String? =
-            if (helpDesc == null) {
-                null
-            } else {
-                val options = (if (shortForm != null) "-$shortForm, " else "") + "--" + longForm + ":"
-                val tabs = 4 - (options.length / 4)
-                options + "\t".repeat(tabs) + helpDesc +
-                        (if (isRequired) " (is required)" else "")
-            }
+        if (helpDesc == null) {
+            null
+        } else {
+            val options = (if (shortForm != null) "-$shortForm, " else "") + "--" + longForm + ":"
+            val tabs = 4 - (options.length / 4)
+            options + "\t".repeat(tabs) + helpDesc +
+                (if (isRequired) " (is required)" else "")
+        }
 
     @Throws(IllegalOptionValueException::class)
     fun setValue(arg: String) {
@@ -82,7 +82,7 @@ class LongOption(
 
     @Throws(IllegalOptionValueException::class)
     override fun parse(arg: String): Long =
-            arg.toLongOrNull() ?: throw IllegalOptionValueException(this, arg)
+        arg.toLongOrNull() ?: throw IllegalOptionValueException(this, arg)
 }
 
 class IntegerOption(
@@ -94,7 +94,7 @@ class IntegerOption(
 
     @Throws(IllegalOptionValueException::class)
     override fun parse(arg: String): Int =
-            arg.toIntOrNull() ?: throw IllegalOptionValueException(this, arg)
+        arg.toIntOrNull() ?: throw IllegalOptionValueException(this, arg)
 }
 
 class DoubleOption(
@@ -106,7 +106,7 @@ class DoubleOption(
 
     @Throws(IllegalOptionValueException::class)
     override fun parse(arg: String): Double =
-            arg.toDoubleOrNull() ?: throw IllegalOptionValueException(this, arg)
+        arg.toDoubleOrNull() ?: throw IllegalOptionValueException(this, arg)
 }
 
 class BooleanOption(

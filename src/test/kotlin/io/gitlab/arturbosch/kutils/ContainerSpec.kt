@@ -6,7 +6,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.BehaviorSpec
+import io.kotlintest.specs.StringSpec
 import java.io.PrintStream
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
@@ -14,115 +14,104 @@ import kotlin.concurrent.thread
 /**
  * @author Artur Bosch
  */
-class ContainerSpec : BehaviorSpec({
+class ContainerSpec : StringSpec({
 
-    given("default container with some classes") {
+    """
+        given: default container with some classes
+        when: using the same singleton in two threads to loop 100x
+        then: the result must be exactly 200
+    """ {
 
         Injekt.addSingleton<PrintStream>(System.out)
         Injekt.addFactory { Logger() }
         Injekt.addSingletonFactory { VisitHandler() }
         Injekt.addFactory { Counter() }
 
-        `when`("using the same singleton in two threads to loop 100x") {
-            val thread = thread {
-                val handler = Injekt.get<VisitHandler>()
-                for (i in 1..100) {
-                    handler.visit()
-                }
-            }
-            val thread2 = thread {
-                val handler = Injekt.get<VisitHandler>()
-                for (i in 1..100) {
-                    handler.visit()
-                }
-            }
-
-            thread.join()
-            thread2.join()
-
-            then("the result must be exactly 200") {
-                Injekt.get<VisitHandler>().counter.number.get() shouldBe 200
+        val thread = thread {
+            val handler = Injekt.get<VisitHandler>()
+            for (i in 1..100) {
+                handler.visit()
             }
         }
+        val thread2 = thread {
+            val handler = Injekt.get<VisitHandler>()
+            for (i in 1..100) {
+                handler.visit()
+            }
+        }
+
+        thread.join()
+        thread2.join()
+
+        Injekt.get<VisitHandler>().counter.number.get() shouldBe 200
     }
 
-    given("generic classes") {
+    """
+        given: generic classes
+        when: using different types of a generic class
+        then: each individual generic type is returned
+        and: unregistered type throw errors
+    """ {
 
-        `when`("using different types of a generic class") {
+        Injekt.addSingleton(Box<Int>("box-of-int"))
+        val withIntBox = Injekt.withSingleton(IntBox())
+        Injekt.addSingleton(Box<String>("box-of-string"))
+        Injekt.addSingleton(Box<List<Int>>("box-of-list-of-int"))
+        Injekt.addSingleton(Box<List<String>>("box-of-list-of-string"))
+        Injekt.addSingleton(Box<Map<String, List<Set<Int>>>>("box-of-map-of-string-and-list-of-set-of-int"))
 
-            Injekt.addSingleton(Box<Int>("box-of-int"))
-            val withIntBox = Injekt.withSingleton(IntBox())
-            Injekt.addSingleton(Box<String>("box-of-string"))
-            Injekt.addSingleton(Box<List<Int>>("box-of-list-of-int"))
-            Injekt.addSingleton(Box<List<String>>("box-of-list-of-string"))
-            Injekt.addSingleton(Box<Map<String, List<Set<Int>>>>("box-of-map-of-string-and-list-of-set-of-int"))
+        val intBox: Box<Int> = Injekt.get()
+        val intBox2: IntBox = Injekt.get()
+        val stringBox: Box<String> = Injekt.get()
+        val string2Box: Box<String> = Injekt.get()
+        val listIntBox: Box<List<Int>> = Injekt.get()
+        val listStringBox: Box<List<String>> = Injekt.get()
+        val mapBox: Box<Map<String, List<Set<Int>>>> = Injekt.get()
+        intBox.name shouldBe "box-of-int"
+        intBox2.name shouldBe "int-box"
+        intBox2 shouldBe withIntBox
+        stringBox.name shouldBe "box-of-string"
+        listIntBox.name shouldBe "box-of-list-of-int"
+        listStringBox.name shouldBe "box-of-list-of-string"
+        listStringBox.name shouldBe "box-of-list-of-string"
+        mapBox.name shouldBe "box-of-map-of-string-and-list-of-set-of-int"
+        stringBox shouldBe string2Box
 
-            then("each individual generic type is returned") {
-                val intBox: Box<Int> = Injekt.get()
-                val intBox2: IntBox = Injekt.get()
-                val stringBox: Box<String> = Injekt.get()
-                val string2Box: Box<String> = Injekt.get()
-                val listIntBox: Box<List<Int>> = Injekt.get()
-                val listStringBox: Box<List<String>> = Injekt.get()
-                val mapBox: Box<Map<String, List<Set<Int>>>> = Injekt.get()
-                intBox.name shouldBe "box-of-int"
-                intBox2.name shouldBe "int-box"
-                intBox2 shouldBe withIntBox
-                stringBox.name shouldBe "box-of-string"
-                listIntBox.name shouldBe "box-of-list-of-int"
-                listStringBox.name shouldBe "box-of-list-of-string"
-                listStringBox.name shouldBe "box-of-list-of-string"
-                mapBox.name shouldBe "box-of-map-of-string-and-list-of-set-of-int"
-                stringBox shouldBe string2Box
-            }
-        }
-
-        and("unregistered type throw errors") {
-            shouldThrow<InvalidDependency> { Injekt.get<Box<Any>>() }
-            shouldThrow<InvalidDependency> { Injekt.get<Box<*>>() }
-        }
+        shouldThrow<InvalidDependency> { Injekt.get<Box<Any>>() }
+        shouldThrow<InvalidDependency> { Injekt.get<Box<*>>() }
     }
 
-    given("circular dependencies") {
+    """
+        given: circular dependencies
+        when: retrieving a from b eagerly
+        then: a circular dependency is detected
+    """ {
 
-        `when`("retrieving a from b eagerly") {
+        Injekt.addSingletonFactory { EagerA() }
+        Injekt.addSingletonFactory { EagerB() }
 
-            Injekt.addSingletonFactory { EagerA() }
-            Injekt.addSingletonFactory { EagerB() }
-
-            then("a circular dependency is detected") {
-                val error = shouldThrow<CircularDependency> {
-                    Injekt.get<EagerA>()
-                }
-                println(error)
-            }
+        val error = shouldThrow<CircularDependency> {
+            Injekt.get<EagerA>()
         }
+        println(error)
 
-        `when`("retrieving a from b lazily") {
+        Injekt.addSingletonFactory { LazyA() }
+        Injekt.addSingletonFactory { LazyB() }
 
-            Injekt.addSingletonFactory { LazyA() }
-            Injekt.addSingletonFactory { LazyB() }
+        val a = Injekt.get<LazyA>()
+        val b = Injekt.get<LazyB>()
 
-            val a = Injekt.get<LazyA>()
-            val b = Injekt.get<LazyB>()
-
-            then("it should be lazily created") {
-                a shouldBe b.a
-                b shouldBe a.b
-            }
-        }
+        a shouldBe b.a
+        b shouldBe a.b
     }
 
-    given("lazy injection with initialize function") {
+    "lazy injection with initialize function" {
         Injekt.addSingletonFactory { Counter() }
         Injekt.addSingletonFactory { LazyWithInitBox() }
 
-        `when`("retrieving obj with a lazy-with-init dependency") {
-            val counter = Injekt.get<LazyWithInitBox>().counter
-            then("the counter of obj is 1 not 0") {
-                counter.number.get() shouldBe 1
-            }
-        }
+        val counter = Injekt.get<LazyWithInitBox>().counter
+
+        counter.number.get() shouldBe 1
     }
 }) {
 
@@ -143,8 +132,7 @@ open class TestContainer : DefaultContainer() {
 }
 
 class VisitHandler(
-    val counter: Counter = Injekt.get(),
-    private val logger: Logger = Injekt.get()
+    val counter: Counter = Injekt.get(), private val logger: Logger = Injekt.get()
 ) {
     fun visit() {
         counter.inc()

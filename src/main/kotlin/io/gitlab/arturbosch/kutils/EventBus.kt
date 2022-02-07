@@ -38,10 +38,9 @@ interface EventBus {
 }
 
 inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit) =
-        subscribe(subscriber, T::class, action)
+    subscribe(subscriber, T::class, action)
 
-inline fun <reified T : Any> EventBus.unsubscribe(subscriber: Any) =
-        unsubscribe(subscriber, T::class)
+inline fun <reified T : Any> EventBus.unsubscribe(subscriber: Any) = unsubscribe(subscriber, T::class)
 
 /**
  * A subscription bundles the action to take when specific event type is triggered for a subscriber.
@@ -92,8 +91,7 @@ open class DefaultEventBus(
     }
 
     private fun <T : Any> internalPost(event: T) {
-        val subscriptions = subscriptions[event::class]
-                ?.toList() // copy to prevent ConcurrentModificationException
+        val subscriptions = subscriptions[event::class]?.toList() // copy to prevent ConcurrentModificationException
             ?: return
         for (subscription in subscriptions) {
             try {
@@ -127,10 +125,11 @@ class LoggingExceptionHandler : EventBusExceptionHandler {
 
     override fun handle(e: Throwable, subscription: Subscription) {
         if (log.isLoggable(Level.SEVERE)) {
-            log.log(Level.SEVERE,
-                    "Unexpected error '$e' " +
-                            "on subscriber '${subscription.owner}' " +
-                            "when dispatching event '${subscription.eventType}'."
+            log.log(
+                Level.SEVERE,
+                "Unexpected error '$e' " +
+                    "on subscriber '${subscription.owner}' " +
+                    "when dispatching event '${subscription.eventType}'."
             )
         }
     }
