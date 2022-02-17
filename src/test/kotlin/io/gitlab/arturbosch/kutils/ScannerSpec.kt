@@ -16,7 +16,7 @@ class ScannerSpec {
         ... // second comment
 
         \n
-        """.trimIndent()
+    """.trimIndent()
 
     @Test
     fun `scans content`() {

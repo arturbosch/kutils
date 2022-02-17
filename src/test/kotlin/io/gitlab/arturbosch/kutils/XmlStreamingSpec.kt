@@ -87,10 +87,12 @@ internal class XmlStreamingSpec : StringSpec({
 
         fun parseDependency(xml: XMLStreamReader) {
             xml.apply {
-                dependencies.add(Dependency(
+                dependencies.add(
+                    Dependency(
                         getAttributeValue(null, "attribute1"),
                         getAttributeValue(null, "attribute2")
-                ))
+                    )
+                )
             }
         }
 

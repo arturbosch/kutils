@@ -98,11 +98,11 @@ internal class EventBusSpec : StringSpec({
 
     "allows to override exception handler" {
         val bus = DefaultEventBus(
-                handler = object : EventBusExceptionHandler {
-                    override fun handle(e: Throwable, subscription: Subscription) {
-                        throw UnsupportedOperationException("not implemented")
-                    }
+            handler = object : EventBusExceptionHandler {
+                override fun handle(e: Throwable, subscription: Subscription) {
+                    throw UnsupportedOperationException("not implemented")
                 }
+            }
         )
 
         object {

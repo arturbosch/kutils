@@ -19,12 +19,12 @@ class ProcessesSpec : StringSpec({
 
     "it should start and consume a process" {
         val processStatus = process(
-                listOf("ls", "-lA"),
-                Files.createTempDirectory("kutils").toFile()
+            listOf("ls", "-lA"),
+            Files.createTempDirectory("kutils").toFile()
         ).consume()
         val (out, err, status) = processStatus
-                .onSuccess { assertTrue(true) }
-                .onError { fail("Should execute ls -lA successfully.") }
+            .onSuccess { assertTrue(true) }
+            .onError { fail("Should execute ls -lA successfully.") }
 
         status shouldBe 0
         out shouldNot beEmpty()

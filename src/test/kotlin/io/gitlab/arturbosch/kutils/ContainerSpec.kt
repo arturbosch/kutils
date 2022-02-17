@@ -29,13 +29,13 @@ class ContainerSpec : StringSpec({
 
         val thread = thread {
             val handler = Injekt.get<VisitHandler>()
-            for (i in 1..100) {
+            for (ignored in 1..100) {
                 handler.visit()
             }
         }
         val thread2 = thread {
             val handler = Injekt.get<VisitHandler>()
-            for (i in 1..100) {
+            for (ignored in 1..100) {
                 handler.visit()
             }
         }
@@ -132,7 +132,8 @@ open class TestContainer : DefaultContainer() {
 }
 
 class VisitHandler(
-    val counter: Counter = Injekt.get(), private val logger: Logger = Injekt.get()
+    val counter: Counter = Injekt.get(),
+    private val logger: Logger = Injekt.get()
 ) {
     fun visit() {
         counter.inc()

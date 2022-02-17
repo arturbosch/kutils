@@ -14,13 +14,15 @@ class ConsoleTreesSpec : StringSpec({
 
     "simple testcase" {
         assertLinesAreEqual(
-            toTreeString(SimpleStringNode(
-                "A",
-                listOf(
-                    SimpleStringNode("B", listOf(SimpleStringNode("C", listOf()))),
-                    SimpleStringNode("D", listOf())
+            toTreeString(
+                SimpleStringNode(
+                    "A",
+                    listOf(
+                        SimpleStringNode("B", listOf(SimpleStringNode("C", listOf()))),
+                        SimpleStringNode("D", listOf())
+                    )
                 )
-            )),
+            ),
             """
              ── A
                 ├── B
