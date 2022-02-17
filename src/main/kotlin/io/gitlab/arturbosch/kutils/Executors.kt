@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.kutils
 
 import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.ThreadPoolExecutor
@@ -39,28 +40,21 @@ fun withNamedThreadPoolExecutor(
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
 ): ThreadPoolExecutor = withCustomThreadFactoryExecutor(
-    PrefixedThreadFactory(name), coreThreads, maxThreads
+    NamedThreadFactory(name),
+    coreThreads,
+    maxThreads
 )
 
-open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory {
-    private val group: ThreadGroup
-    private val threadNumber = AtomicInteger(1)
-    private val name: String
+open class NamedThreadFactory(
+    val name: String,
+    private val backingThreadFactory: ThreadFactory = Executors.defaultThreadFactory()
+) : ThreadFactory {
 
-    init {
-        val s = System.getSecurityManager()
-        group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
-        val pool = poolNumber.andIncrement
-        name = namePrefix + (if (pool == 1) "" else "-$pool") + "-worker-"
-    }
+    private val threadNumber = AtomicInteger(0)
 
     override fun newThread(r: Runnable): Thread {
-        val thread = Thread(
-            group,
-            r,
-            namePrefix + threadNumber.andIncrement,
-            0
-        )
+        val thread = backingThreadFactory.newThread(r)
+        thread.name = "$name-worker-${threadNumber.getAndIncrement()}"
         if (thread.isDaemon) {
             thread.isDaemon = false
         }
@@ -68,9 +62,5 @@ open class PrefixedThreadFactory(private val namePrefix: String) : ThreadFactory
             thread.priority = Thread.NORM_PRIORITY
         }
         return thread
-    }
-
-    companion object {
-        private val poolNumber = AtomicInteger(1)
     }
 }
