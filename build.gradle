@@ -15,7 +15,7 @@ repositories {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        freeCompilerArgs = ["-Xuse-experimental=kotlin.Experimental", "-Xjvm-default=enable"]
+        freeCompilerArgs = ["-Xopt-in=kotlin.Experimental", "-Xjvm-default=enable"]
         jvmTarget = "1.8"
     }
 }
