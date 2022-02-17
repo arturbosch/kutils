@@ -7,6 +7,7 @@ import java.util.stream.Stream
 /**
  * Collect entries of stream into a list.
  */
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // Stream.toList was introduced in Java 16
 fun <T> Stream<T>.toList(): List<T> = collect(Collectors.toList<T>())
 
 /**
