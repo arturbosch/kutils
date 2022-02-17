@@ -17,7 +17,7 @@ import javax.xml.stream.events.XMLEvent
  *  - retrieving the tag content the attributes are skipped, later asking for attributes throws [IllegalStateException]
  *  - retrieving the tag content consumes the [XMLEvent.END_ELEMENT] event.
  */
-inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)) =
+inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)): T =
     XMLStreamer(XMLInputFactory.newFactory().createXMLStreamReader(this)).run {
         init()
         stream()
@@ -83,7 +83,7 @@ inline fun XMLStreamWriter.document(
     version: String? = null,
     encoding: String? = null,
     init: XMLStreamWriter.() -> Unit
-) = apply {
+): XMLStreamWriter = apply {
     when {
         encoding != null && version != null -> writeStartDocument(encoding, version)
         version != null -> writeStartDocument(version)
@@ -96,7 +96,7 @@ inline fun XMLStreamWriter.document(
 inline fun XMLStreamWriter.tag(
     name: String,
     init: XMLStreamWriter.() -> Unit
-) = apply {
+): XMLStreamWriter = apply {
     writeStartElement(name)
     init()
     writeEndElement()
@@ -105,7 +105,7 @@ inline fun XMLStreamWriter.tag(
 fun XMLStreamWriter.emptyTag(
     name: String,
     init: (XMLStreamWriter.() -> Unit)? = null
-) = apply {
+): XMLStreamWriter = apply {
     writeEmptyElement(name)
     init?.invoke(this)
 }
@@ -114,7 +114,7 @@ inline fun XMLStreamWriter.tag(
     name: String,
     content: String,
     init: XMLStreamWriter.() -> Unit
-) = apply {
+): XMLStreamWriter = apply {
     tag(name) {
         init()
         writeCharacters(content)
@@ -131,7 +131,7 @@ fun XMLStreamWriter.comment(content: String) {
     writeComment(content)
 }
 
-fun XMLStreamWriter.attribute(name: String, value: String) = writeAttribute(name, value)
+fun XMLStreamWriter.attribute(name: String, value: String): Unit = writeAttribute(name, value)
 
 abstract class DelegatingXMLStreamWriter(writer: XMLStreamWriter) : XMLStreamWriter by writer
 

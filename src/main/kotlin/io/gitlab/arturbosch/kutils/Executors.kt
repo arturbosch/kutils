@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-val cores get() = Runtime.getRuntime().availableProcessors()
+val cores: Int get() = Runtime.getRuntime().availableProcessors()
 
 /**
  * Directly executes the given runnable task on current thread.
@@ -26,10 +26,10 @@ fun withCustomThreadFactoryExecutor(
     threadFactory: ThreadFactory,
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
-) = ThreadPoolExecutor(
+): ThreadPoolExecutor = ThreadPoolExecutor(
     coreThreads, maxThreads,
     0L, TimeUnit.MILLISECONDS,
-    LinkedBlockingQueue<Runnable>(),
+    LinkedBlockingQueue(),
     threadFactory,
     ThreadPoolExecutor.AbortPolicy()
 )
@@ -38,7 +38,7 @@ fun withNamedThreadPoolExecutor(
     name: String,
     coreThreads: Int = cores,
     maxThreads: Int = coreThreads
-) = withCustomThreadFactoryExecutor(
+): ThreadPoolExecutor = withCustomThreadFactoryExecutor(
     PrefixedThreadFactory(name), coreThreads, maxThreads
 )
 

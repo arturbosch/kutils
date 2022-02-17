@@ -9,8 +9,8 @@ abstract class Option<T> private constructor(
     val helpDesc: String? = null
 ) {
     companion object {
-        val longFormPattern = Regex("^([a-z](?:[a-z0-9_\\-]*[a-z0-9])?)$", RegexOption.IGNORE_CASE)
-        val shortFormPattern = Regex("^[a-z]$", RegexOption.IGNORE_CASE)
+        val longFormPattern: Regex = Regex("^([a-z](?:[a-z0-9_\\-]*[a-z0-9])?)$", RegexOption.IGNORE_CASE)
+        val shortFormPattern: Regex = Regex("^[a-z]$", RegexOption.IGNORE_CASE)
     }
 
     init {

@@ -63,22 +63,22 @@ inline fun Path.hasEnding(ending: String): Boolean = this.toAbsolutePath().toStr
 /**
  * Tests if this path exists.
  */
-inline fun Path.exists() = Files.exists(this)
+inline fun Path.exists(): Boolean = Files.exists(this)
 
 /**
  * Tests if this path does not exist.
  */
-inline fun Path.notExists() = Files.notExists(this)
+inline fun Path.notExists(): Boolean = Files.notExists(this)
 
 /**
  * Reads the file content into a string.
  */
-inline fun Path.readText(charSet: Charset = Charsets.UTF_8) = String(Files.readAllBytes(this), charSet)
+inline fun Path.readText(charSet: Charset = Charsets.UTF_8): String = String(Files.readAllBytes(this), charSet)
 
 /**
  * Reads the file content into a byte array.
  */
-inline fun Path.readBytes() = Files.readAllBytes(this)
+inline fun Path.readBytes(): ByteArray = Files.readAllBytes(this)
 
 /**
  * Reads all lines of the file represented by this path.
@@ -113,7 +113,7 @@ inline fun <T> Path.useNormalizedLines(
 inline fun <T> InputStream.useNormalizedLines(
     vararg prefixesToFilter: String,
     block: (Sequence<String>) -> T
-) = this.bufferedReader().useLines { block(it.applyFilters(prefixesToFilter)) }
+): T = this.bufferedReader().useLines { block(it.applyFilters(prefixesToFilter)) }
 
 /**
  * Copies content of this path to target path.

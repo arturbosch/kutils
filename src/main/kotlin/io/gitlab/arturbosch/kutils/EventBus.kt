@@ -37,10 +37,10 @@ interface EventBus {
     fun <T : Any> postAsync(event: T)
 }
 
-inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit) =
+inline fun <reified T : Any> EventBus.subscribe(subscriber: Any, noinline action: (T) -> Unit): EventBus =
     subscribe(subscriber, T::class, action)
 
-inline fun <reified T : Any> EventBus.unsubscribe(subscriber: Any) = unsubscribe(subscriber, T::class)
+inline fun <reified T : Any> EventBus.unsubscribe(subscriber: Any): EventBus = unsubscribe(subscriber, T::class)
 
 /**
  * A subscription bundles the action to take when specific event type is triggered for a subscriber.

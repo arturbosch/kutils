@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.kutils
 import java.io.Reader
 import java.io.StringReader
 import java.nio.file.Path
-import java.util.HashMap
 import java.util.Properties
 
 /**
@@ -16,7 +15,7 @@ interface ApplicationHome {
     val baseDir: Path
 
     @JvmDefault
-    fun check(path: Path, isDir: Boolean = true, shouldCreate: Boolean = true) = path.apply {
+    fun check(path: Path, isDir: Boolean = true, shouldCreate: Boolean = true): Path = path.apply {
         if (notExists() && shouldCreate) {
             when {
                 isDir -> this.createDir()
@@ -90,7 +89,12 @@ abstract class ReloadableConfig(
     private val wrapped: ApplicationHomeFolder
 ) : ApplicationHome by wrapped, PropertiesAware by wrapped {
 
-    val readOnlyProperties get() = wrapped.internalProperties().toMap()
-    protected fun clearProperties() = wrapped.internalProperties().clear()
+    val readOnlyProperties: Map<String, String>
+        get() = wrapped.internalProperties().toMap()
+
+    protected fun clearProperties() {
+        wrapped.internalProperties().clear()
+    }
+
     abstract fun reload()
 }

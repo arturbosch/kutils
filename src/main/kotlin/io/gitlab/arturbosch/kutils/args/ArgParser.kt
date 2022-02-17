@@ -9,7 +9,7 @@ open class ArgParser(
 ) {
 
     companion object {
-        fun create(name: String, desc: String, init: ArgParser.() -> Unit) =
+        fun create(name: String, desc: String, init: ArgParser.() -> Unit): ArgParser =
             ArgParser(name, desc).apply(init)
     }
 

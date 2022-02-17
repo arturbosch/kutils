@@ -14,14 +14,14 @@ import java.util.function.Supplier
 inline fun <T> useExecutor(
     executor: ExecutorService = Executors.newFixedThreadPool(cores),
     block: ExecutorService.() -> T
-) = block.invoke(executor).apply {
+): T = block.invoke(executor).apply {
     executor.shutdown()
 }
 
 /**
  * Starts given block in a completable future with this executor.
  */
-inline fun <T> Executor.runAsync(crossinline block: () -> T) = task(this, block)
+inline fun <T> Executor.runAsync(crossinline block: () -> T): CompletableFuture<T> = task(this, block)
 
 /**
  * Starts given task as a completable future. If no executor is specialized, the common

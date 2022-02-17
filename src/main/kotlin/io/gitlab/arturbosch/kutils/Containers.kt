@@ -5,6 +5,7 @@ package io.gitlab.arturbosch.kutils
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * Defines minimal logic for dependency injection.
@@ -24,7 +25,7 @@ interface Container {
  */
 open class DefaultContainer : Container {
 
-    protected val factories = ConcurrentHashMap<Type, Factory<*>>()
+    protected val factories: ConcurrentMap<Type, Factory<*>> = ConcurrentHashMap()
 
     override fun <T : Any> get(type: Type): T {
         val factory = factories[type] ?: throw InvalidDependency(type)

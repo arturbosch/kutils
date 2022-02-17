@@ -62,7 +62,7 @@ fun <T> toTreeString(startNode: T, converter: ConsoleTreeConverter<T>): String {
 }
 
 object DefaultConsoleTreeConverters {
-    fun PathConverter() = object : ConsoleTreeConverter<Path> {
+    fun PathConverter(): ConsoleTreeConverter<Path> = object : ConsoleTreeConverter<Path> {
         override fun label(node: Path): String {
             return node.fileName.toString()
         }

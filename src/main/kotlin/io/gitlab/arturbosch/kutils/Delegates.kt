@@ -3,7 +3,7 @@ package io.gitlab.arturbosch.kutils
 import java.util.logging.Logger
 import kotlin.reflect.KProperty
 
-fun julLogger() = LoggerDelegate()
+fun julLogger(): LoggerDelegate = LoggerDelegate()
 
 class LoggerDelegate {
 
