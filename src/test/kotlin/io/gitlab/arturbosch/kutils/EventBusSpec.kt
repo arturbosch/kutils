@@ -2,6 +2,8 @@ package io.gitlab.arturbosch.kutils
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -77,7 +79,9 @@ internal class EventBusSpec : StringSpec({
 
         actual.get() shouldBe 0
         bus.post(BroadcastEvent)
-        countDownLatch.await(1L, TimeUnit.SECONDS)
+        withContext(Dispatchers.IO) {
+            countDownLatch.await(1L, TimeUnit.SECONDS)
+        }
         actual.get() shouldBe 2
     }
 
@@ -90,7 +94,7 @@ internal class EventBusSpec : StringSpec({
             }
 
             fun run() {
-                throw IllegalStateException("oO")
+                error("oO")
             }
         }
         bus.post(BroadcastEvent)
@@ -111,7 +115,7 @@ internal class EventBusSpec : StringSpec({
             }
 
             fun run() {
-                throw IllegalStateException("oO")
+                error("oO")
             }
         }
 

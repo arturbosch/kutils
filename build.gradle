@@ -1,9 +1,12 @@
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
-    id 'org.gradle.maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'com.github.ben-manes.versions' version '0.42.0'
-    id 'io.gitlab.arturbosch.detekt' version '1.19.0'
+    id 'io.gitlab.arturbosch.detekt' version '1.21.0'
     id 'org.sonarqube' version '3.3'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'io.gitlab.arturbosch'
@@ -34,7 +37,7 @@ detekt {
     }
 }
 
-task detektProjectBaseline(type: io.gitlab.arturbosch.detekt.DetektCreateBaselineTask) {
+task detektProjectBaseline(type: DetektCreateBaselineTask) {
     description = "Overrides current baseline."
     ignoreFailures.set(true)
     parallel.set(true)
@@ -65,5 +68,30 @@ test {
     useJUnitPlatform()
     testLogging {
         events "failed"
+    }
+}
+
+def repositoryPath = property("reposilite.repository.name")
+def repositoryUrl = property("reposilite.repository.url")
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = repositoryPath
+            url = repositoryUrl
+            allowInsecureProtocol = true // intranet
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
     }
 }

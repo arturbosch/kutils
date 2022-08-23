@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.kutils.args
 
-abstract class OptionException(description: String) : Exception(description)
+open class OptionException(description: String) : Exception(description)
 
 class NotFlagException(
     options: String,

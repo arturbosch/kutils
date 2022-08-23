@@ -21,7 +21,7 @@ inline fun <reified T : Any> Reader.streamXml(init: (XMLStreamer.() -> Unit)): T
     XMLStreamer(XMLInputFactory.newFactory().createXMLStreamReader(this)).run {
         init()
         stream()
-        result?.invoke() as? T ?: throw IllegalStateException(
+        result?.invoke() as? T ?: error(
             "'${T::class}' expected to return. Make sure to end streaming with an 'onFinish()' call."
         )
     }
@@ -133,7 +133,7 @@ fun XMLStreamWriter.comment(content: String) {
 
 fun XMLStreamWriter.attribute(name: String, value: String): Unit = writeAttribute(name, value)
 
-abstract class DelegatingXMLStreamWriter(writer: XMLStreamWriter) : XMLStreamWriter by writer
+open class DelegatingXMLStreamWriter(writer: XMLStreamWriter) : XMLStreamWriter by writer
 
 class IndentingXMLStreamWriter(
     writer: XMLStreamWriter,

@@ -134,6 +134,6 @@ Options:
 	-l, --long:		Magic long number
 	-d, --double:	Magic double number - no short
 	-s, --string:	Magic string
-	""".trimIndent().trimEnd()
+        """.trimIndent().trimEnd()
     }
 })
